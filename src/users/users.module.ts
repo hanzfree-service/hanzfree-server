@@ -28,7 +28,7 @@ import { AuthModule } from 'src/auth/auth.module';
     }),
     forwardRef(() => AuthModule),
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UsersService],
   controllers: [UsersController],
   providers: [
     UsersService,

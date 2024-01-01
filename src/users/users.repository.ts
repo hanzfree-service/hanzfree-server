@@ -76,4 +76,14 @@ export class UsersRepository {
       relations: ['goods'],
     });
   }
+
+  async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
+    const queryBuilder = this.usersRepository.createQueryBuilder('user');
+    const usersWithExpiredTokens = await queryBuilder
+      .where('user.currentRefreshTokenExp <= :currentTime', {
+        currentTime: new Date(currentTime),
+      })
+      .getMany();
+    return usersWithExpiredTokens;
+  }
 }

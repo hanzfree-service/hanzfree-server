@@ -140,4 +140,8 @@ export class UsersService {
       currentRefreshTokenExp: null,
     });
   }
+
+  async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
+    return this.usersRepository.findUsersWithExpiredTokens(currentTime);
+  }
 }
