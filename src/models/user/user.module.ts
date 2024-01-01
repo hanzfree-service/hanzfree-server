@@ -1,12 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/users.entity';
+import { User } from './entities/user.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from 'src/auth/constants';
-import { UsersRepository } from './users.repository';
+import { UserRepository } from './user.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/jwt-refresh.guard';
@@ -28,15 +27,15 @@ import { AuthModule } from 'src/auth/auth.module';
     }),
     forwardRef(() => AuthModule),
   ],
-  exports: [TypeOrmModule, UsersService],
-  controllers: [UsersController],
+  exports: [TypeOrmModule, UserService],
+  controllers: [UserController],
   providers: [
-    UsersService,
+    UserService,
     AuthService,
-    UsersRepository,
+    UserRepository,
     ConfigService,
     JwtAuthGuard,
     JwtRefreshStrategy,
   ],
 })
-export class UsersModule {}
+export class UserModule {}

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateGoodDto } from './dto/create-good.dto';
 import { UpdateGoodDto } from './dto/update-good.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/users.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import { Good } from './entities/good.entity';
 import {
   DataSource,

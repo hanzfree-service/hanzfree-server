@@ -8,36 +8,28 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
-// import { User } from './interfaces/user.interface';
+import { UserService } from './user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
-// import { ParseIntPipe } from 'src/common/pipes/parse-int.pipe';
-import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { CommonResponse } from 'src/common/decorator/common-response.decorator';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { DeleteResult } from 'typeorm';
-import { User } from './entities/users.entity';
+import { User } from './entities/user.entity';
 
 @ApiTags('user-controller')
-@Controller('users')
-export class UsersController {
-  constructor(
-    private readonly userService: UsersService,
-    private readonly authService: AuthService,
-  ) {}
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  getProfile(@Request() req) {
+  getProfile(@Req() req) {
     return req.user;
   }
 
@@ -46,14 +38,7 @@ export class UsersController {
     return this.userService.signup(createUserDto);
   }
 
-  // @Post('signin')
-  // async signin(@Body() createUserDto: CreateUserDto): Promise<any> {
-  //   const user = await this.userService.signin(createUserDto);
-
-  //   return this.authService.login(user);
-  // }
-
-  @Patch(':user_idx')
+  @Patch(':userId')
   @ApiOperation({
     summary: '유저 수정 API',
     description: 'user_idx와 body를 통해 유저정보를 수정한다.',
@@ -62,13 +47,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   editUser(
     @Param(
-      'user_idx',
+      'userId',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
-    user_idx: number,
+    userId: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<any> {
-    return this.userService.updateUser(user_idx, updateUserDto);
+    return this.userService.updateUser(userId, updateUserDto);
   }
 
   @Get()
@@ -77,32 +62,32 @@ export class UsersController {
     return this.userService.findAll();
   }
 
-  @Get(':user_idx')
+  @Get(':userId')
   @ApiOperation({
     summary: '유저 조회 API',
     description: 'user_idx를 통해 유저를 조회한다.',
   })
   findId(
     @Param(
-      'user_idx',
+      'userId',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
-    user_idx: number,
+    userId: number,
   ): Promise<User> {
-    return this.userService.findId(user_idx);
+    return this.userService.findId(userId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @Delete(':user_idx')
+  @Delete(':userId')
   remove(
-    @Param('user_idx', new ParseIntPipe()) user_idx: number,
+    @Param('userId', new ParseIntPipe()) userId: number,
   ): Promise<DeleteResult> {
-    return this.userService.remove(user_idx);
+    return this.userService.remove(userId);
   }
 
-  @Get('/withitem/:user_idx')
-  getUserWithGoods(@Param('user_idx') user_idx: number): Promise<User> {
-    return this.userService.getUserByIdWithGoods(user_idx);
+  @Get('/withitem/:userId')
+  getUserWithGoods(@Param('userId') userId: number): Promise<User> {
+    return this.userService.getUserByIdWithGoods(userId);
   }
 }

@@ -2,9 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
-  // @IsInt()
-  // readonly user_idx: number;
-
   @IsString()
   @IsOptional()
   @ApiProperty({ description: '유저 이름', required: false })

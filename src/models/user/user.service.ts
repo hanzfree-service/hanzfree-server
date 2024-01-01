@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -7,57 +8,61 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { DeleteResult } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/users.entity';
-import { UsersRepository } from './users.repository';
+import { User } from './entities/user.entity';
+import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
-    private readonly usersRepository: UsersRepository,
+    private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
   ) {}
 
   async signup(createUserDto: CreateUserDto): Promise<User> {
-    return this.usersRepository.createUser(createUserDto);
+    // 이메일 중복 체크
+    const emailExists = await this.userRepository.findByEmail(
+      createUserDto.email,
+    );
+    if (emailExists) {
+      throw new ConflictException('This email is already in use.');
+    }
+
+    return this.userRepository.createUser(createUserDto);
   }
 
-  // async signin(createUserDto: CreateUserDto): Promise<User | null> {
-  //   return this.usersRepository.findUserByUsernameAndPassword(createUserDto);
-  // }
-
   async updateUser(
-    user_idx: number,
+    userId: number,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    const user = await this.usersRepository.findId(user_idx);
+    const user = await this.userRepository.findId(userId);
 
     const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
 
     if (!user) {
-      throw new NotFoundException(`User with user_idx ${user_idx} not found`);
+      throw new NotFoundException(`User with user_idx ${userId} not found`);
     }
 
-    return this.usersRepository.updateUser(user_idx, {
+    return this.userRepository.updateUser(userId, {
       ...updateUserDto,
       password: hashedPassword,
     });
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.findAll();
+    return this.userRepository.findAll();
   }
 
-  async findId(userIdx: number): Promise<User> {
-    const user = await this.usersRepository.findId(userIdx);
+  async findId(userId: number): Promise<User> {
+    const user = await this.userRepository.findId(userId);
     if (!user) {
-      throw new NotFoundException(`User with user_idx ${userIdx} not found`);
+      throw new NotFoundException(`User with user_idx ${userId} not found`);
     }
     return user;
   }
 
   async findUserByUsername(username: string): Promise<User> {
-    const user = await this.usersRepository.findUserByUsername(username);
+    const user = await this.userRepository.findUserByUsername(username);
 
     if (!user) {
       throw new NotFoundException(`User with username ${username} not found`);
@@ -65,21 +70,21 @@ export class UsersService {
     return user;
   }
 
-  async findUserWithPasswordByUsername(username: string): Promise<User> {
-    const user = this.usersRepository.findUserWithPasswordByUsername(username);
+  async findUserWithPasswordByEmail(email: string): Promise<User> {
+    const user = this.userRepository.findUserWithPasswordByEmail(email);
 
     if (!user) {
-      throw new NotFoundException(`User with username ${username} not found`);
+      throw new NotFoundException(`User with email ${email} not found`);
     }
     return user;
   }
 
-  async remove(userIdx: number): Promise<DeleteResult> {
-    return this.usersRepository.remove(userIdx);
+  async remove(userId: number): Promise<DeleteResult> {
+    return this.userRepository.remove(userId);
   }
 
-  async getUserByIdWithGoods(userIdx: number): Promise<User> {
-    return this.usersRepository.findUserByIdWithGoods(userIdx);
+  async getUserByIdWithGoods(userId: number): Promise<User> {
+    return this.userRepository.findUserByIdWithGoods(userId);
   }
 
   async getCurrentHashedRefreshToken(refreshToken: string) {
@@ -93,6 +98,9 @@ export class UsersService {
 
   async getCurrentRefreshTokenExp(): Promise<Date> {
     const currentDate = new Date();
+
+    console.log('currentDate', currentDate);
+    console.log('getTime', currentDate.getTime());
     // Date 형식으로 데이터베이스에 저장하기 위해 문자열을 숫자 타입으로 변환 (paresInt)
     const currentRefreshTokenExp = new Date(
       currentDate.getTime() +
@@ -101,11 +109,11 @@ export class UsersService {
     return currentRefreshTokenExp;
   }
 
-  async setCurrentRefreshToken(refreshToken: string, userIdx: number) {
+  async setCurrentRefreshToken(refreshToken: string, userId: number) {
     const currentRefreshToken =
       await this.getCurrentHashedRefreshToken(refreshToken);
     const currentRefreshTokenExp = await this.getCurrentRefreshTokenExp();
-    await this.usersRepository.updateUser(userIdx, {
+    await this.userRepository.updateUser(userId, {
       currentRefreshToken: currentRefreshToken,
       currentRefreshTokenExp: currentRefreshTokenExp,
     });
@@ -135,13 +143,13 @@ export class UsersService {
   }
 
   async removeRefreshToken(userId: number): Promise<any> {
-    return await this.usersRepository.updateUser(userId, {
+    return await this.userRepository.updateUser(userId, {
       currentRefreshToken: null,
       currentRefreshTokenExp: null,
     });
   }
 
   async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
-    return this.usersRepository.findUsersWithExpiredTokens(currentTime);
+    return this.userRepository.findUsersWithExpiredTokens(currentTime);
   }
 }

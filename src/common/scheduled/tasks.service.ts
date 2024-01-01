@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { UsersService } from 'src/users/users.service';
+import { UserService } from 'src/models/user/user.service';
 
 @Injectable()
 export class TasksService {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UserService) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async removeExpiredTokens() {
     const currentTime = new Date().getTime();
     const usersWithExpiredTokens =
       await this.usersService.findUsersWithExpiredTokens(currentTime);
-    console.log(usersWithExpiredTokens);
+    console.log('hi', usersWithExpiredTokens);
     for (const user of usersWithExpiredTokens) {
       if (user.currentRefreshToken) {
-        await this.usersService.removeRefreshToken(user.user_idx);
+        await this.usersService.removeRefreshToken(user.id);
       }
     }
   }

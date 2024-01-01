@@ -1,24 +1,22 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
+import { UserModule } from '../models/user/user.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
-import { UsersService } from 'src/users/users.service';
+import { LocalStrategy } from '../common/guards/local.strategy';
+import { UserService } from 'src/models/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
-import { UsersRepository } from 'src/users/users.repository';
+import { UserRepository } from 'src/models/user/user.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/users.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import { AuthController } from './auth.controller';
-import { JwtRefreshGuard } from './jwt-refresh.guard';
-
 import { JwtRefreshStrategy } from './jwt-refresh.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    UsersModule,
+    UserModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -30,17 +28,17 @@ import { JwtAuthGuard } from './jwt-auth.guard';
       }),
       inject: [ConfigService],
     }),
-    forwardRef(() => UsersModule),
+    forwardRef(() => UserModule),
   ],
   exports: [AuthService, JwtAuthGuard, JwtRefreshStrategy],
   controllers: [AuthController],
   providers: [
     AuthService,
     LocalStrategy,
-    UsersService,
+    UserService,
     JwtAuthGuard,
     JwtRefreshStrategy,
-    UsersRepository,
+    UserRepository,
     ConfigService,
   ],
 })

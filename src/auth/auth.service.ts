@@ -4,25 +4,25 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../models/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/entities/users.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from 'src/users/dto/login.dto';
+import { LoginDto } from 'src/auth/dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async validateUser(loginDto: LoginDto): Promise<User> {
-    const user = await this.usersService.findUserWithPasswordByUsername(
-      loginDto.username,
+    const user = await this.usersService.findUserWithPasswordByEmail(
+      loginDto.email,
     );
 
     if (!user) {
@@ -36,29 +36,21 @@ export class AuthService {
     return user;
   }
 
-  // async login(user: any) {
-  //   const payload = { username: user.username, sub: user.user_idx };
-  //   return {
-  //     access_token: this.jwtService.sign(payload),
-  //   };
-  // }
-
   async generateAccessToken(user: User): Promise<string> {
     const payload = {
-      id: user.user_idx,
+      id: user.id,
+      email: user.email,
       username: user.username,
       role: user.role,
     };
-
-    // const secret = this.configService.get<string>('JWT_ACCESS_SECRET');
-    // console.log('JWT Secret:', secret); // 로깅으로 값 확인
 
     return this.jwtService.signAsync(payload);
   }
 
   async generateRefreshToken(user: User): Promise<string> {
     const payload = {
-      id: user.user_idx,
+      id: user.id,
+      email: user.email,
       username: user.username,
       role: user.role,
     };
@@ -86,10 +78,10 @@ export class AuthService {
     });
 
     // Check if user exists
-    const userIdx = decodedRefreshToken.id;
+    const id = decodedRefreshToken.id;
     const user = await this.usersService.getUserIfRefreshTokenMatches(
       refresh_token,
-      userIdx,
+      id,
     );
     if (!user) {
       throw new UnauthorizedException('Invalid user!');

@@ -1,10 +1,10 @@
-import { User } from 'src/users/entities/users.entity';
+import { User } from 'src/models/user/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Good {
   @PrimaryGeneratedColumn()
-  good_idx: number;
+  id: number;
 
   @Column()
   good_name: string;

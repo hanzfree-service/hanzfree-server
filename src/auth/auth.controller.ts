@@ -4,37 +4,33 @@ import {
   Get,
   Post,
   Req,
-  Request,
   Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-// import { User } from './interfaces/user.interface';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-// import { ParseIntPipe } from 'src/common/pipes/parse-int.pipe';
 import { AuthService } from 'src/auth/auth.service';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { LoginDto } from 'src/users/dto/login.dto';
-import { UsersService } from 'src/users/users.service';
+import { LoginDto } from 'src/auth/dto/login.dto';
+import { UserService } from 'src/models/user/user.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { Response } from 'express';
 import { JwtRefreshGuard } from './jwt-refresh.guard';
+import { User } from 'src/models/user/entities/user.entity';
 
 @ApiTags('auth-controller')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
 
   @Post('login')
   @ApiOperation({
     summary: '로그인 API',
-    description: 'username과 password를 확인 후 JWT 토큰을 발급한다.',
+    description: 'email password를 확인 후 JWT 토큰을 발급한다.',
   })
-  //   @UseGuards(LocalAuthGuard)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -44,8 +40,7 @@ export class AuthController {
     const refresh_token = await this.authService.generateRefreshToken(user);
 
     // refresh token DB에 저장
-    // 유저 객체에 refresh-token 데이터 저장
-    await this.userService.setCurrentRefreshToken(refresh_token, user.user_idx);
+    await this.userService.setCurrentRefreshToken(refresh_token, user.id);
 
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
@@ -78,7 +73,7 @@ export class AuthController {
 
   @Get('authenticate')
   @UseGuards(JwtAuthGuard)
-  async user(@Req() req: any): Promise<any> {
+  async user(@Req() req: any): Promise<User> {
     const userId: number = req.user.id;
     const verifiedUser = await this.userService.findId(userId);
 
