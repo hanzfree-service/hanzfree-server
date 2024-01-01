@@ -6,12 +6,13 @@ import { UserService } from 'src/models/user/user.service';
 export class TasksService {
   constructor(private usersService: UserService) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  //
+  @Cron(CronExpression.EVERY_MINUTE)
   async removeExpiredTokens() {
     const currentTime = new Date().getTime();
     const usersWithExpiredTokens =
       await this.usersService.findUsersWithExpiredTokens(currentTime);
-    console.log('hi', usersWithExpiredTokens);
+    // console.log('list', usersWithExpiredTokens);
     for (const user of usersWithExpiredTokens) {
       if (user.currentRefreshToken) {
         await this.usersService.removeRefreshToken(user.id);
