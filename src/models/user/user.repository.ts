@@ -75,8 +75,8 @@ export class UserRepository {
   }
 
   async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
-    const usersWithExpiredTokens = await queryBuilder
+    const usersWithExpiredTokens = this.userRepository
+      .createQueryBuilder('user')
       .where('user.currentRefreshTokenExp <= :currentTime', {
         currentTime: new Date(currentTime),
       })
