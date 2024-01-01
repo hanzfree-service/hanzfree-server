@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         autoLoadEntities: true,
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE'), // 상용 서버에서는 false로 바꿔야함
         timezone: 'UTC',
+        logging: true,
       }),
       inject: [ConfigService],
     }),
