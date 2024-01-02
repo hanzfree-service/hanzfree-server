@@ -23,13 +23,7 @@ export class UserRepository {
 
     const savedUser = await this.userRepository.save(user);
 
-    // password 필드 제외하고 반환
-    const { password: _, ...userWithoutPassword } = savedUser;
-    return userWithoutPassword;
-  }
-
-  async findUserByUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ where: { username } });
+    return savedUser;
   }
 
   async findUserWithPasswordByEmail(email: string): Promise<User> {
@@ -61,10 +55,6 @@ export class UserRepository {
 
   async remove(userId: number): Promise<DeleteResult> {
     return this.userRepository.delete(userId);
-  }
-
-  async findWithUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ where: { username } });
   }
 
   async findUserByIdWithGoods(userId: number): Promise<User> {

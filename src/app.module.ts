@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthModule } from './auth/auth.module';
+import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { ApiResponseInterceptor } from './common/interceptors/response.interceptor';
 import { DatabaseModule } from './database/database.module';
 import { GoodsModule } from './models/goods/goods.module';
@@ -18,7 +18,7 @@ import { TasksService } from './common/scheduled/tasks.service';
     ScheduleModule.forRoot(),
     UserModule,
     GoodsModule,
-    AuthModule,
+    LocalAuthModule,
   ],
 
   providers: [

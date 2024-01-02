@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Role } from 'src/common/enums/role.enum';
 import { Good } from 'src/models/goods/entities/good.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -10,11 +11,15 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
+  @Exclude()
   @Column()
-  username!: string;
+  password: string;
 
-  @Column({ select: false })
-  password?: string;
+  @Column({ name: 'first_name' })
+  firstName: string;
+
+  @Column({ name: 'last_name' })
+  lastName: string;
 
   @Column({ default: Role.User })
   role: string;
@@ -34,4 +39,17 @@ export class User {
 
   @Column({ name: 'created_at', type: 'timestamp' })
   createdAt: Date = new Date();
+
+  // 아래의 프로퍼티부터 소셜 로그인과 관련
+  @Column({ default: false })
+  isSocialAccountRegistered: boolean;
+
+  @Column({ name: 'social_provider', default: Provider.LOCAL })
+  socialProvider: string;
+
+  @Column({ name: 'external_id', nullable: true, default: null })
+  externalId: string;
+
+  @Column({ name: 'social_refresh_token', nullable: true, default: null })
+  socialProvidedRefreshToken: string;
 }

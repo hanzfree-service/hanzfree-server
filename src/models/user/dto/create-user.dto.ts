@@ -7,12 +7,16 @@ export class CreateUserDto {
   readonly email: string;
 
   @IsString()
-  @ApiProperty({ description: '유저 이름' })
-  readonly username: string;
-
-  @IsString()
   @ApiProperty({ description: '비밀번호' })
   readonly password: string;
+
+  @IsString()
+  @ApiProperty({ description: '유저 이름' })
+  readonly firstName: string;
+
+  @IsString()
+  @ApiProperty({ description: '유저 성' })
+  readonly lastName: string;
 
   @IsString()
   @ApiProperty({ description: 'role' })

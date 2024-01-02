@@ -4,16 +4,16 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from '../models/user/user.service';
+import { UserService } from '../../models/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/models/user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
 
 @Injectable()
-export class AuthService {
+export class LocalAuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
@@ -40,7 +40,8 @@ export class AuthService {
     const payload = {
       id: user.id,
       email: user.email,
-      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
       role: user.role,
     };
 
@@ -51,7 +52,8 @@ export class AuthService {
     const payload = {
       id: user.id,
       email: user.email,
-      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
       role: user.role,
     };
 

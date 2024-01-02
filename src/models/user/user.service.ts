@@ -61,15 +61,6 @@ export class UserService {
     return user;
   }
 
-  async findUserByUsername(username: string): Promise<User> {
-    const user = await this.userRepository.findUserByUsername(username);
-
-    if (!user) {
-      throw new NotFoundException(`User with username ${username} not found`);
-    }
-    return user;
-  }
-
   async findUserWithPasswordByEmail(email: string): Promise<User> {
     const user = this.userRepository.findUserWithPasswordByEmail(email);
 

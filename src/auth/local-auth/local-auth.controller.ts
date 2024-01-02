@@ -9,21 +9,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthService } from 'src/auth/auth.service';
+import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { UserService } from 'src/models/user/user.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { JwtAuthGuard } from '../jwt-auth.guard';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { Response } from 'express';
-import { JwtRefreshGuard } from './jwt-refresh.guard';
+import { JwtRefreshGuard } from '../jwt-refresh.guard';
 import { User } from 'src/models/user/entities/user.entity';
 
 @ApiTags('auth-controller')
 @Controller('auth')
-export class AuthController {
+export class LocalAuthController {
   constructor(
     private readonly userService: UserService,
-    private readonly authService: AuthService,
+    private readonly authService: LocalAuthService,
   ) {}
 
   @Post('login')
