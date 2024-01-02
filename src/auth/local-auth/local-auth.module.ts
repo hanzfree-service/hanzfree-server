@@ -12,12 +12,15 @@ import { User } from 'src/models/user/entities/user.entity';
 import { LocalAuthController } from './local-auth.controller';
 import { JwtRefreshStrategy } from '../jwt-refresh.strategy';
 import { JwtAuthGuard } from '../jwt-auth.guard';
+import { GoogleAuthenticationController } from '../google/google-auth.controller';
+import { GoogleStrategy } from '../google/google-auth.strategy';
+import { GoogleAuthenticationService } from '../google/google-auth.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     UserModule,
-    PassportModule,
+    // PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -29,17 +32,22 @@ import { JwtAuthGuard } from '../jwt-auth.guard';
       inject: [ConfigService],
     }),
     forwardRef(() => UserModule),
+    PassportModule.register({
+      session: true,
+    }),
   ],
   exports: [LocalAuthService, JwtAuthGuard, JwtRefreshStrategy],
-  controllers: [LocalAuthController],
+  controllers: [LocalAuthController, GoogleAuthenticationController],
   providers: [
     LocalAuthService,
     LocalStrategy,
     UserService,
     JwtAuthGuard,
     JwtRefreshStrategy,
+    GoogleStrategy,
     UserRepository,
     ConfigService,
+    GoogleAuthenticationService,
   ],
 })
 export class LocalAuthModule {}

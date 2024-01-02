@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SocialLoginInfoDto } from 'src/auth/dto/social-login-info.dto';
 
 @Injectable()
 export class UserRepository {
@@ -26,6 +27,10 @@ export class UserRepository {
     return savedUser;
   }
 
+  async findUserByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async findUserWithPasswordByEmail(email: string): Promise<User> {
     return this.userRepository
       .createQueryBuilder('user')
@@ -38,8 +43,8 @@ export class UserRepository {
     return this.userRepository.find();
   }
 
-  async findId(userId: number): Promise<User> {
-    return this.userRepository.findOne({ where: { id: userId } });
+  async findId(id: number): Promise<User> {
+    return this.userRepository.findOne({ where: { id: id } });
   }
 
   async updateUser(
@@ -76,5 +81,50 @@ export class UserRepository {
 
   async findByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
+  }
+
+  async createSocialUser(
+    socialLoginInfoDto: SocialLoginInfoDto,
+  ): Promise<User> {
+    const {
+      email,
+      firstName,
+      lastName,
+      socialProvider,
+      externalId,
+      refreshToken,
+    } = socialLoginInfoDto;
+
+    return this.userRepository.save({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      socialProvider: socialProvider,
+      externalId: externalId,
+      socialProvidedRefreshToken: refreshToken,
+    });
+  }
+
+  async updateSocialUserInfo(id: number) {
+    await this.userRepository.update(id, {
+      isSocialAccountRegistered: true,
+    });
+    const updateUser = await this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return updateUser;
+  }
+
+  async updateSocialUserRefToken(id: number, refreshToken: string) {
+    await this.userRepository.update(id, {
+      socialProvidedRefreshToken: refreshToken,
+    });
+    return this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 }

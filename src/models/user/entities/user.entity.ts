@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { Provider } from 'src/common/enums/provider.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { Good } from 'src/models/goods/entities/good.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -21,7 +22,7 @@ export class User {
   @Column({ name: 'last_name' })
   lastName: string;
 
-  @Column({ default: Role.User })
+  @Column({ default: Role.USER })
   role: string;
 
   @OneToMany(() => Good, (good) => good.user)

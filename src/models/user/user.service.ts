@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
+import { SocialLoginInfoDto } from 'src/auth/dto/social-login-info.dto';
 
 @Injectable()
 export class UserService {
@@ -53,10 +54,18 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async findId(userId: number): Promise<User> {
-    const user = await this.userRepository.findId(userId);
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findId(id);
     if (!user) {
-      throw new NotFoundException(`User with user_idx ${userId} not found`);
+      throw new NotFoundException(`User with user_idx ${id} not found`);
+    }
+    return user;
+  }
+
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
     }
     return user;
   }
@@ -114,7 +123,7 @@ export class UserService {
     refreshToken: string,
     userIdx: number,
   ): Promise<User> {
-    const user: User = await this.findId(userIdx);
+    const user: User = await this.findUserById(userIdx);
 
     // user에 currentRefreshToken이 없다면 null을 반환 (즉, 토큰 값이 null일 경우)
     if (!user.currentRefreshToken) {
@@ -142,5 +151,21 @@ export class UserService {
 
   async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
     return this.userRepository.findUsersWithExpiredTokens(currentTime);
+  }
+
+  async createSocialUser(
+    socialLoginInfoDto: SocialLoginInfoDto,
+  ): Promise<User> {
+    return this.userRepository.createSocialUser(socialLoginInfoDto);
+  }
+
+  async updateSocialUserInfo(id: number) {
+    await this.userRepository.updateSocialUserInfo(id);
+    const updateUser = await this.userRepository.findId(id);
+    return updateUser;
+  }
+
+  async updateSocialUserRefToken(id: number, refreshToken: string) {
+    return this.userRepository.updateSocialUserRefToken(id, refreshToken);
   }
 }

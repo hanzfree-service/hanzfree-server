@@ -43,7 +43,7 @@ export class UserController {
     summary: '유저 수정 API',
     description: 'user_idx와 body를 통해 유저정보를 수정한다.',
   })
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   editUser(
     @Param(
@@ -74,11 +74,11 @@ export class UserController {
     )
     userId: number,
   ): Promise<User> {
-    return this.userService.findId(userId);
+    return this.userService.findUserById(userId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   @Delete(':userId')
   remove(
     @Param('userId', new ParseIntPipe()) userId: number,

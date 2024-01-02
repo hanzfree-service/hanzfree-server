@@ -75,7 +75,7 @@ export class LocalAuthController {
   @UseGuards(JwtAuthGuard)
   async user(@Req() req: any): Promise<User> {
     const userId: number = req.user.id;
-    const verifiedUser = await this.userService.findId(userId);
+    const verifiedUser = await this.userService.findUserById(userId);
 
     return verifiedUser;
   }
