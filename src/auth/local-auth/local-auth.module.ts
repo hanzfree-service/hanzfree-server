@@ -33,7 +33,7 @@ import { GoogleAuthenticationService } from '../google/google-auth.service';
     }),
     forwardRef(() => UserModule),
     PassportModule.register({
-      session: true,
+      session: false,
     }),
   ],
   exports: [LocalAuthService, JwtAuthGuard, JwtRefreshStrategy],

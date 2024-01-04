@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { GoogleAuthenticationService } from './google-auth.service';
 import { SocialLoginInfoDto } from '../dto/social-login-info.dto';
+import { User } from 'src/models/user/entities/user.entity';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -16,19 +17,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   }
 
   // refreshToken을 얻고 싶다면 해당 메서드 설정 필수
-  authorizationParams(): { [key: string]: string } {
-    return {
-      access_type: 'offline',
-      prompt: 'select_account',
-    };
-  }
+  // authorizationParams(): { [key: string]: string } {
+  //   return {
+  //     access_type: 'offline',
+  //     prompt: 'select_account',
+  //   };
+  // }
 
   async validate(
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done: VerifyCallback,
-  ): Promise<void> {
+    // done: VerifyCallback,
+  ): Promise<object | User> {
     const { name, emails, provider } = profile;
     const socialLoginUserInfo: SocialLoginInfoDto = {
       email: emails[0].value,
@@ -36,18 +37,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       lastName: name.familyName,
       socialProvider: provider,
       externalId: profile.id,
-      accessToken,
-      refreshToken,
+      // accessToken,
+      // refreshToken,
     };
-    try {
-      const user =
-        await this.googleAuthService.validateAndSaveUser(socialLoginUserInfo);
-      console.log(user, 'strategy');
 
-      // 3번째 인자로 accessToken을 담아줌으로써, login 요청마다 현재 로그인 상태에 대한 유효성을 검증 받도록 한다.
-      done(null, user, accessToken);
-    } catch (err) {
-      done(err, false);
-    }
+    console.log('socialLoginUserInfo', socialLoginUserInfo);
+    const user =
+      await this.googleAuthService.validateAndSaveUser(socialLoginUserInfo);
+
+    return user;
   }
 }

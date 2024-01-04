@@ -13,7 +13,7 @@ export class User {
   email!: string;
 
   @Exclude()
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ name: 'first_name' })
@@ -50,7 +50,4 @@ export class User {
 
   @Column({ name: 'external_id', nullable: true, default: null })
   externalId: string;
-
-  @Column({ name: 'social_refresh_token', nullable: true, default: null })
-  socialProvidedRefreshToken: string;
 }

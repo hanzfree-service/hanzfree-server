@@ -21,12 +21,4 @@ export class SocialLoginInfoDto {
   @IsString()
   @ApiProperty({ description: '구글 profile id' })
   readonly externalId: string;
-
-  @IsString()
-  @ApiProperty({ description: 'access_token' })
-  readonly accessToken: string;
-
-  @IsString()
-  @ApiProperty({ description: 'refresh_token' })
-  readonly refreshToken: string;
 }

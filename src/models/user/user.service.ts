@@ -64,9 +64,9 @@ export class UserService {
 
   async findUserByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
+    // if (!user) {
+    //   throw new NotFoundException(`User with email ${email} not found`);
+    // }
     return user;
   }
 
@@ -76,6 +76,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
     }
+
     return user;
   }
 
@@ -99,8 +100,6 @@ export class UserService {
   async getCurrentRefreshTokenExp(): Promise<Date> {
     const currentDate = new Date();
 
-    console.log('currentDate', currentDate);
-    console.log('getTime', currentDate.getTime());
     // Date 형식으로 데이터베이스에 저장하기 위해 문자열을 숫자 타입으로 변환 (paresInt)
     const currentRefreshTokenExp = new Date(
       currentDate.getTime() +
@@ -157,15 +156,5 @@ export class UserService {
     socialLoginInfoDto: SocialLoginInfoDto,
   ): Promise<User> {
     return this.userRepository.createSocialUser(socialLoginInfoDto);
-  }
-
-  async updateSocialUserInfo(id: number) {
-    await this.userRepository.updateSocialUserInfo(id);
-    const updateUser = await this.userRepository.findId(id);
-    return updateUser;
-  }
-
-  async updateSocialUserRefToken(id: number, refreshToken: string) {
-    return this.userRepository.updateSocialUserRefToken(id, refreshToken);
   }
 }

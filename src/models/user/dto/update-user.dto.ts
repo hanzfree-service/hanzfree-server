@@ -5,7 +5,7 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   @ApiProperty({ description: '유저 이름', required: false })
-  readonly username?: string;
+  readonly email?: string;
 
   @IsString()
   @IsOptional()

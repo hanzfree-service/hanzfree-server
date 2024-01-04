@@ -48,38 +48,3 @@ export class JwtAuthGuard implements CanActivate {
     }
   }
 }
-
-// @Injectable()
-// export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt-auth') {
-//   constructor(
-//     private readonly usersService: UsersService,
-//     private readonly jwtService: JwtService,
-//     private readonly configService: ConfigService,
-//   ) {
-//     super({
-//       jwtFromRequest: ExtractJwt.fromExtractors([
-//         (request: Request) => {
-//           return request?.cookies?.['access_token'];
-//         },
-//       ]),
-//       secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
-//       passReqToCallback: true,
-//     });
-//   }
-
-//   async validate(req: Request, payload: any) {
-//     try {
-//       console.log('req', req);
-//       const accessToken = req.cookies['access_token'];
-//       console.log('accessToken', accessToken);
-//       if (!accessToken) {
-//         throw new Error('No access token found in cookies');
-//       }
-//       // const user = await this.usersService.findId(payload.user_idx);
-//       const user = await this.jwtService.verify(accessToken);
-//       return user;
-//     } catch (err) {
-//       return false;
-//     }
-//   }
-// }

@@ -49,11 +49,7 @@ export class LocalAuthController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
     });
-    return {
-      message: 'login success',
-      access_token: access_token,
-      refresh_token: refresh_token,
-    };
+    return user;
   }
 
   @Post('logout')
@@ -82,11 +78,13 @@ export class LocalAuthController {
 
   @Post('refresh')
   async refresh(
+    @Req() req: any,
     @Body() refreshTokenDto: RefreshTokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const newAccessToken = (await this.authService.refresh(refreshTokenDto))
+      const refreshToken = req.cookies['refresh_token'];
+      const newAccessToken = (await this.authService.refresh(refreshToken))
         .accessToken;
       res.setHeader('Authorization', 'Bearer ' + newAccessToken);
       res.cookie('access_token', newAccessToken, {

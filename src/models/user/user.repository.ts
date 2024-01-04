@@ -86,45 +86,18 @@ export class UserRepository {
   async createSocialUser(
     socialLoginInfoDto: SocialLoginInfoDto,
   ): Promise<User> {
-    const {
-      email,
-      firstName,
-      lastName,
-      socialProvider,
-      externalId,
-      refreshToken,
-    } = socialLoginInfoDto;
+    const { email, firstName, lastName, socialProvider, externalId } =
+      socialLoginInfoDto;
 
-    return this.userRepository.save({
+    const user = this.userRepository.create({
       email: email,
       firstName: firstName,
       lastName: lastName,
+      isSocialAccountRegistered: true,
       socialProvider: socialProvider,
       externalId: externalId,
-      socialProvidedRefreshToken: refreshToken,
     });
-  }
 
-  async updateSocialUserInfo(id: number) {
-    await this.userRepository.update(id, {
-      isSocialAccountRegistered: true,
-    });
-    const updateUser = await this.userRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
-    return updateUser;
-  }
-
-  async updateSocialUserRefToken(id: number, refreshToken: string) {
-    await this.userRepository.update(id, {
-      socialProvidedRefreshToken: refreshToken,
-    });
-    return this.userRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
+    return this.userRepository.save(user);
   }
 }

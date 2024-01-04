@@ -3,17 +3,25 @@ import { UserService } from 'src/models/user/user.service';
 import { SocialLoginInfoDto } from '../dto/social-login-info.dto';
 import { User } from 'src/models/user/entities/user.entity';
 import { Provider } from 'src/common/enums/provider.enum';
+import { LocalAuthService } from '../local-auth/local-auth.service';
 
 @Injectable()
 export class GoogleAuthenticationService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: LocalAuthService,
+  ) {}
 
   async validateAndSaveUser(
     socialLoginInfoDto: SocialLoginInfoDto,
   ): Promise<object | User> {
-    const { email, refreshToken } = socialLoginInfoDto;
+    const {
+      email,
+      // refreshToken
+    } = socialLoginInfoDto;
 
     const existingUser = await this.userService.findUserByEmail(email);
+    console.log('existingUser', existingUser);
 
     if (existingUser) {
       if (existingUser.socialProvider !== Provider.GOOGLE) {
@@ -22,19 +30,17 @@ export class GoogleAuthenticationService {
           msg: '해당 이메일을 사용중인 계정이 존재합니다.',
         };
       } else {
-        const updateUserWithRefToken: User =
-          await this.userService.updateSocialUserRefToken(
-            existingUser.id,
-            refreshToken,
-          );
-        return updateUserWithRefToken;
+        // TODO: refreshToken 업데이트
+        // const updateUserWithRefToken: User =
+        //   await this.userService.updateSocialUserRefToken(
+        //     existingUser.id,
+        //     refreshToken,
+        //   );
+        return existingUser;
       }
     }
 
-    const newUser = await this.userService.createSocialUser(socialLoginInfoDto);
-    const updateUser = await this.userService.updateSocialUserInfo(newUser.id);
-
-    return updateUser;
+    return this.userService.createSocialUser(socialLoginInfoDto);
   }
 
   async findUserById(id: number) {

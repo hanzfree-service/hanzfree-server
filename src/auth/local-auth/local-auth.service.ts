@@ -29,8 +29,12 @@ export class LocalAuthService {
       throw new NotFoundException('User not found!');
     }
 
+    if (user.isSocialAccountRegistered) {
+      throw new BadRequestException('Social account registered!');
+    }
+
     if (!(await bcrypt.compare(loginDto.password, user.password))) {
-      throw new BadRequestException('Invalid credentials!');
+      throw new BadRequestException('Invalid password!');
     }
 
     return user;
@@ -68,30 +72,31 @@ export class LocalAuthService {
     );
   }
 
-  async refresh(
-    refreshTokenDto: RefreshTokenDto,
-  ): Promise<{ accessToken: string }> {
-    const { refresh_token } = refreshTokenDto;
+  async refresh(refreshToken: string): Promise<{ accessToken: string }> {
+    try {
+      // Verify refresh token
+      // JWT Refresh Token 검증 로직
+      const decodedRefreshToken = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
 
-    // Verify refresh token
-    // JWT Refresh Token 검증 로직
-    const decodedRefreshToken = this.jwtService.verify(refresh_token, {
-      secret: process.env.JWT_REFRESH_SECRET,
-    });
+      // Check if user exists
+      const id = decodedRefreshToken.id;
+      const user = await this.usersService.getUserIfRefreshTokenMatches(
+        refreshToken,
+        id,
+      );
+      if (!user) {
+        throw new UnauthorizedException('Invalid user!');
+      }
 
-    // Check if user exists
-    const id = decodedRefreshToken.id;
-    const user = await this.usersService.getUserIfRefreshTokenMatches(
-      refresh_token,
-      id,
-    );
-    if (!user) {
-      throw new UnauthorizedException('Invalid user!');
+      // Generate new access token
+      const accessToken = await this.generateAccessToken(user);
+
+      return { accessToken };
+    } catch (err) {
+      console.log('err', err);
+      throw new UnauthorizedException('Invalid refresh-token');
     }
-
-    // Generate new access token
-    const accessToken = await this.generateAccessToken(user);
-
-    return { accessToken };
   }
 }
