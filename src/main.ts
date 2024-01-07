@@ -30,6 +30,13 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use(
+    session({
+      secret: 'my-secret',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
 
   app.useGlobalFilters(new HttpExceptionFilter());
 

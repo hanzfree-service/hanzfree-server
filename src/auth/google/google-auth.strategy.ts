@@ -41,7 +41,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       // refreshToken,
     };
 
-    console.log('socialLoginUserInfo', socialLoginUserInfo);
+    // console.log('socialLoginUserInfo', socialLoginUserInfo);
     const user =
       await this.googleAuthService.validateAndSaveUser(socialLoginUserInfo);
 

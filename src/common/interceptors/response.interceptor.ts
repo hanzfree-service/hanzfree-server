@@ -38,6 +38,7 @@ export class ApiResponseInterceptor<T>
         let response;
         if (error instanceof HttpException) {
           const status = error.getStatus();
+
           response = {
             status: status,
             success: false,

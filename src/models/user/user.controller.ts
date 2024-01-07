@@ -57,7 +57,8 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getList(): Promise<User[]> {
     return this.userService.findAll();
   }
@@ -77,9 +78,9 @@ export class UserController {
     return this.userService.findUserById(userId);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
   @Delete(':userId')
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   remove(
     @Param('userId', new ParseIntPipe()) userId: number,
   ): Promise<DeleteResult> {
@@ -89,5 +90,14 @@ export class UserController {
   @Get('/withitem/:userId')
   getUserWithGoods(@Param('userId') userId: number): Promise<User> {
     return this.userService.getUserByIdWithGoods(userId);
+  }
+
+  @Post('/reservation')
+  @UseGuards(JwtAuthGuard)
+  move(@Req() req, @Body() dto: any) {
+    console.log('req.user.id', req.user.id);
+
+    console.log('body', dto);
+    return req.user;
   }
 }

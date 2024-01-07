@@ -26,6 +26,9 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const accessToken = request.cookies['access_token'];
+
+      // console.log('accessToken', accessToken);
+
       const user = await this.jwtService.verify(accessToken);
 
       request.user = user;
@@ -56,7 +59,6 @@ export class JwtAuthGuard implements CanActivate {
           return user;
         } catch (refreshErr) {
           // refresh_token 검증 실패
-          console.log('hi', refreshErr);
 
           throw new UnauthorizedException('Authentication required');
         }

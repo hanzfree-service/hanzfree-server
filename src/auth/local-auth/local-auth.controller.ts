@@ -40,7 +40,10 @@ export class LocalAuthController {
     const refresh_token = await this.authService.generateRefreshToken(user);
 
     // refresh token DB에 저장
-    await this.userService.setCurrentRefreshToken(refresh_token, user.id);
+    const refreshTokenInfo = await this.userService.setCurrentRefreshToken(
+      refresh_token,
+      user.id,
+    );
 
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
@@ -49,7 +52,11 @@ export class LocalAuthController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
     });
-    return user;
+
+    return {
+      ...user,
+      currentRefreshTokenExp: refreshTokenInfo.currentRefreshTokenExp,
+    };
   }
 
   @Post('logout')
@@ -58,13 +65,12 @@ export class LocalAuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    await this.userService.removeRefreshToken(req.user.user_idx);
+    await this.userService.removeRefreshToken(req.user.id);
+
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
 
-    return {
-      message: 'logout success',
-    };
+    return 'logout success';
   }
 
   @Get('authenticate')

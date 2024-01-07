@@ -15,11 +15,22 @@ export class GoogleAuthenticationController {
   @Get('/login')
   @UseGuards(GoogleAuthGuard)
   async handleLogin(
-    @Query('redirect') redirect: string,
+    @Query('from') from: string,
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('redirect', redirect);
+    req.session.from = from;
+    res.redirect('/api/auth/google/redirect');
+  }
+
+  // login 성공 시, redirect를 수행할 라우트 핸들러
+  @Get('/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async handleRedirect(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const from = req.session.from;
     const user = req.user;
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -34,20 +45,14 @@ export class GoogleAuthenticationController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
     });
-    return {
-      message: 'google login success',
-      access_token: access_token,
-      refresh_token: refresh_token,
-    };
-  }
 
-  // // login 성공 시, redirect를 수행할 라우트 핸들러
-  // @Get('/redirect')
-  // @UseGuards(GoogleAuthGuard)
-  // async handleRedirect(@Req() req: any) {
-  //   console.log('in redirect');
-  //   return req.user;
-  // }
+    // 소셜 로그인 정보 정상적으로 처리 후, 클라이언트로 redirect
+    if (from) {
+      res.redirect(`${process.env.CLIENT_URL}/${from}`);
+    } else {
+      res.redirect(`${process.env.CLIENT_URL}`);
+    }
+  }
 
   // session 저장에 따른 유저 객체 인증/인가 테스트
   @Get('/status')

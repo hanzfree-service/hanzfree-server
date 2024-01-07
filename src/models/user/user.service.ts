@@ -116,6 +116,11 @@ export class UserService {
       currentRefreshToken: currentRefreshToken,
       currentRefreshTokenExp: currentRefreshTokenExp,
     });
+
+    return {
+      currentRefreshToken,
+      currentRefreshTokenExp,
+    };
   }
 
   async getUserIfRefreshTokenMatches(
@@ -142,7 +147,7 @@ export class UserService {
   }
 
   async removeRefreshToken(userId: number): Promise<any> {
-    return await this.userRepository.updateUser(userId, {
+    return this.userRepository.updateUser(userId, {
       currentRefreshToken: null,
       currentRefreshTokenExp: null,
     });
