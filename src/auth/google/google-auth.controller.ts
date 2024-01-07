@@ -13,7 +13,7 @@ export class GoogleAuthenticationController {
 
   // login 라우트 핸들러
   @Get('/login')
-  @UseGuards(GoogleAuthGuard)
+  // @UseGuards(GoogleAuthGuard)
   async handleLogin(
     @Query('from') from: string,
     @Req() req: any,
@@ -46,12 +46,18 @@ export class GoogleAuthenticationController {
       httpOnly: true,
     });
 
+    const responseData = {
+      email: user.email,
+    };
+
     // 소셜 로그인 정보 정상적으로 처리 후, 클라이언트로 redirect
-    if (from) {
+    if (from !== 'undefined') {
       res.redirect(`${process.env.CLIENT_URL}/${from}`);
     } else {
       res.redirect(`${process.env.CLIENT_URL}`);
     }
+
+    return res.json(responseData);
   }
 
   // session 저장에 따른 유저 객체 인증/인가 테스트
