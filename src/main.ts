@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'https://hanzfree-web-xi.vercel.app'],
     credentials: true,
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
   });
@@ -23,8 +23,10 @@ async function bootstrap() {
       saveUninitialized: false,
       // 세션 쿠키에 대한 설정을 나타낸다.
       cookie: {
-        maxAge: 60000, // 1 minute
+        // maxAge: 60000, // 1 minute
         httpOnly: true,
+        sameSite: 'none',
+        domain: 'vercel.app',
       },
     }),
   );
