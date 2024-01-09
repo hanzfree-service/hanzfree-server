@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SocialLoginInfoDto } from 'src/auth/dto/social-login-info.dto';
 
 @Injectable()
 export class UserRepository {
@@ -23,13 +24,11 @@ export class UserRepository {
 
     const savedUser = await this.userRepository.save(user);
 
-    // password 필드 제외하고 반환
-    const { password: _, ...userWithoutPassword } = savedUser;
-    return userWithoutPassword;
+    return savedUser;
   }
 
-  async findUserByUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ where: { username } });
+  async findUserByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async findUserWithPasswordByEmail(email: string): Promise<User> {
@@ -44,8 +43,8 @@ export class UserRepository {
     return this.userRepository.find();
   }
 
-  async findId(userId: number): Promise<User> {
-    return this.userRepository.findOne({ where: { id: userId } });
+  async findId(id: number): Promise<User> {
+    return this.userRepository.findOne({ where: { id: id } });
   }
 
   async updateUser(
@@ -61,10 +60,6 @@ export class UserRepository {
 
   async remove(userId: number): Promise<DeleteResult> {
     return this.userRepository.delete(userId);
-  }
-
-  async findWithUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ where: { username } });
   }
 
   async findUserByIdWithGoods(userId: number): Promise<User> {
@@ -86,5 +81,23 @@ export class UserRepository {
 
   async findByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
+  }
+
+  async createSocialUser(
+    socialLoginInfoDto: SocialLoginInfoDto,
+  ): Promise<User> {
+    const { email, firstName, lastName, socialProvider, externalId } =
+      socialLoginInfoDto;
+
+    const user = this.userRepository.create({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      isSocialAccountRegistered: true,
+      socialProvider: socialProvider,
+      externalId: externalId,
+    });
+
+    return this.userRepository.save(user);
   }
 }

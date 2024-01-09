@@ -3,7 +3,7 @@ import { GoodsService } from './goods.service';
 import { GoodsController } from './goods.controller';
 import { Good } from './entities/good.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
+import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Module({

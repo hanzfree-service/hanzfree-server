@@ -1,23 +1,26 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UserModule } from '../models/user/user.module';
+import { LocalAuthService } from './local-auth.service';
+import { UserModule } from '../../models/user/user.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from '../common/guards/local.strategy';
+import { LocalStrategy } from '../../common/guards/local.strategy';
 import { UserService } from 'src/models/user/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserRepository } from 'src/models/user/user.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/models/user/entities/user.entity';
-import { AuthController } from './auth.controller';
-import { JwtRefreshStrategy } from './jwt-refresh.strategy';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { LocalAuthController } from './local-auth.controller';
+import { JwtRefreshStrategy } from '../jwt-refresh.strategy';
+import { JwtAuthGuard } from '../jwt-auth.guard';
+import { GoogleAuthenticationController } from '../google/google-auth.controller';
+import { GoogleStrategy } from '../google/google-auth.strategy';
+import { GoogleAuthenticationService } from '../google/google-auth.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     UserModule,
-    PassportModule,
+    // PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -29,17 +32,22 @@ import { JwtAuthGuard } from './jwt-auth.guard';
       inject: [ConfigService],
     }),
     forwardRef(() => UserModule),
+    PassportModule.register({
+      session: false,
+    }),
   ],
-  exports: [AuthService, JwtAuthGuard, JwtRefreshStrategy],
-  controllers: [AuthController],
+  exports: [LocalAuthService, JwtAuthGuard, JwtRefreshStrategy],
+  controllers: [LocalAuthController, GoogleAuthenticationController],
   providers: [
-    AuthService,
+    LocalAuthService,
     LocalStrategy,
     UserService,
     JwtAuthGuard,
     JwtRefreshStrategy,
+    GoogleStrategy,
     UserRepository,
     ConfigService,
+    GoogleAuthenticationService,
   ],
 })
-export class AuthModule {}
+export class LocalAuthModule {}

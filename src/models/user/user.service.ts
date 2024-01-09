@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
+import { SocialLoginInfoDto } from 'src/auth/dto/social-login-info.dto';
 
 @Injectable()
 export class UserService {
@@ -53,20 +54,19 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async findId(userId: number): Promise<User> {
-    const user = await this.userRepository.findId(userId);
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findId(id);
     if (!user) {
-      throw new NotFoundException(`User with user_idx ${userId} not found`);
+      throw new NotFoundException(`User with user_idx ${id} not found`);
     }
     return user;
   }
 
-  async findUserByUsername(username: string): Promise<User> {
-    const user = await this.userRepository.findUserByUsername(username);
-
-    if (!user) {
-      throw new NotFoundException(`User with username ${username} not found`);
-    }
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findByEmail(email);
+    // if (!user) {
+    //   throw new NotFoundException(`User with email ${email} not found`);
+    // }
     return user;
   }
 
@@ -76,6 +76,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
     }
+
     return user;
   }
 
@@ -99,8 +100,6 @@ export class UserService {
   async getCurrentRefreshTokenExp(): Promise<Date> {
     const currentDate = new Date();
 
-    console.log('currentDate', currentDate);
-    console.log('getTime', currentDate.getTime());
     // Date 형식으로 데이터베이스에 저장하기 위해 문자열을 숫자 타입으로 변환 (paresInt)
     const currentRefreshTokenExp = new Date(
       currentDate.getTime() +
@@ -117,13 +116,18 @@ export class UserService {
       currentRefreshToken: currentRefreshToken,
       currentRefreshTokenExp: currentRefreshTokenExp,
     });
+
+    return {
+      currentRefreshToken,
+      currentRefreshTokenExp,
+    };
   }
 
   async getUserIfRefreshTokenMatches(
     refreshToken: string,
     userIdx: number,
   ): Promise<User> {
-    const user: User = await this.findId(userIdx);
+    const user: User = await this.findUserById(userIdx);
 
     // user에 currentRefreshToken이 없다면 null을 반환 (즉, 토큰 값이 null일 경우)
     if (!user.currentRefreshToken) {
@@ -143,7 +147,7 @@ export class UserService {
   }
 
   async removeRefreshToken(userId: number): Promise<any> {
-    return await this.userRepository.updateUser(userId, {
+    return this.userRepository.updateUser(userId, {
       currentRefreshToken: null,
       currentRefreshTokenExp: null,
     });
@@ -151,5 +155,11 @@ export class UserService {
 
   async findUsersWithExpiredTokens(currentTime: number): Promise<User[]> {
     return this.userRepository.findUsersWithExpiredTokens(currentTime);
+  }
+
+  async createSocialUser(
+    socialLoginInfoDto: SocialLoginInfoDto,
+  ): Promise<User> {
+    return this.userRepository.createSocialUser(socialLoginInfoDto);
   }
 }

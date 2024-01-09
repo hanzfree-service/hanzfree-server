@@ -9,21 +9,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthService } from 'src/auth/auth.service';
+import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { UserService } from 'src/models/user/user.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { JwtAuthGuard } from '../jwt-auth.guard';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { Response } from 'express';
-import { JwtRefreshGuard } from './jwt-refresh.guard';
+import { JwtRefreshGuard } from '../jwt-refresh.guard';
 import { User } from 'src/models/user/entities/user.entity';
 
 @ApiTags('auth-controller')
 @Controller('auth')
-export class AuthController {
+export class LocalAuthController {
   constructor(
     private readonly userService: UserService,
-    private readonly authService: AuthService,
+    private readonly authService: LocalAuthService,
   ) {}
 
   @Post('login')
@@ -40,7 +40,10 @@ export class AuthController {
     const refresh_token = await this.authService.generateRefreshToken(user);
 
     // refresh token DB에 저장
-    await this.userService.setCurrentRefreshToken(refresh_token, user.id);
+    const refreshTokenInfo = await this.userService.setCurrentRefreshToken(
+      refresh_token,
+      user.id,
+    );
 
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
@@ -49,10 +52,10 @@ export class AuthController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
     });
+
     return {
-      message: 'login success',
-      access_token: access_token,
-      refresh_token: refresh_token,
+      ...user,
+      currentRefreshTokenExp: refreshTokenInfo.currentRefreshTokenExp,
     };
   }
 
@@ -62,31 +65,32 @@ export class AuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    await this.userService.removeRefreshToken(req.user.user_idx);
+    await this.userService.removeRefreshToken(req.user.id);
+
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
 
-    return {
-      message: 'logout success',
-    };
+    return 'logout success';
   }
 
   @Get('authenticate')
   @UseGuards(JwtAuthGuard)
   async user(@Req() req: any): Promise<User> {
     const userId: number = req.user.id;
-    const verifiedUser = await this.userService.findId(userId);
+    const verifiedUser = await this.userService.findUserById(userId);
 
     return verifiedUser;
   }
 
   @Post('refresh')
   async refresh(
+    @Req() req: any,
     @Body() refreshTokenDto: RefreshTokenDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const newAccessToken = (await this.authService.refresh(refreshTokenDto))
+      const refreshToken = req.cookies['refresh_token'];
+      const newAccessToken = (await this.authService.refresh(refreshToken))
         .accessToken;
       res.setHeader('Authorization', 'Bearer ' + newAccessToken);
       res.cookie('access_token', newAccessToken, {

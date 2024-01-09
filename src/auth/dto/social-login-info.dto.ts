@@ -1,14 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class SocialLoginInfoDto {
   @IsString()
   @ApiProperty({ description: '이메일' })
   readonly email: string;
-
-  @IsString()
-  @ApiProperty({ description: '비밀번호' })
-  readonly password: string;
 
   @IsString()
   @ApiProperty({ description: '유저 이름' })
@@ -19,6 +15,10 @@ export class CreateUserDto {
   readonly lastName: string;
 
   @IsString()
-  @ApiProperty({ description: 'role' })
-  readonly role: string;
+  @ApiProperty({ description: '소셜' })
+  readonly socialProvider: string;
+
+  @IsString()
+  @ApiProperty({ description: '구글 profile id' })
+  readonly externalId: string;
 }

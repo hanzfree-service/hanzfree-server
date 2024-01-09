@@ -3,12 +3,13 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
+import { Observable, of, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 export interface CommonResponse<T> {
-  code: number;
+  status: number;
   success: boolean;
   data: T;
 }
@@ -28,10 +29,33 @@ export class ApiResponseInterceptor<T>
         const statusCode = httpResponse.statusCode;
 
         return {
-          code: statusCode,
+          status: statusCode,
           success: statusCode >= 200 && statusCode < 300,
           data: data,
         };
+      }),
+      catchError((error) => {
+        let response;
+        if (error instanceof HttpException) {
+          const status = error.getStatus();
+
+          response = {
+            status: status,
+            success: false,
+            data: error.getResponse()['message'] || error.message,
+          };
+        } else {
+          response = {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            success: false,
+            data: 'Internal server error',
+          };
+        }
+
+        // console.log('response', response);
+        // console.log('response.status', response.status);
+        // return throwError(() => new HttpException(response, response.status));
+        return of(response);
       }),
     );
   }

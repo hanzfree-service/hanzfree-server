@@ -26,14 +26,14 @@ export class GoodsController {
 
   @Post('register')
   // @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   create(@Body() createGoodDto: CreateGoodDto): Promise<InsertResult> {
     return this.goodsService.create(createGoodDto);
   }
 
   @Get()
   // @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.User)
+  @Roles(Role.ADMIN, Role.USER)
   findAll(): Promise<Good[]> {
     return this.goodsService.findAll();
   }
@@ -45,7 +45,7 @@ export class GoodsController {
 
   @Patch(':good_idx')
   // @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.ADMIN)
   update(
     @Param('good_idx') good_idx: string,
     @Body() updateGoodDto: UpdateGoodDto,

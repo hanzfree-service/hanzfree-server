@@ -3,14 +3,14 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { AuthService } from 'src/auth/auth.service';
+import { LocalAuthService } from 'src/auth/local-auth/local-auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/jwt-refresh.guard';
 import { JwtRefreshStrategy } from 'src/auth/jwt-refresh.strategy';
-import { AuthModule } from 'src/auth/auth.module';
+import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
 
 @Module({
   imports: [
@@ -25,13 +25,13 @@ import { AuthModule } from 'src/auth/auth.module';
       }),
       inject: [ConfigService],
     }),
-    forwardRef(() => AuthModule),
+    forwardRef(() => LocalAuthModule),
   ],
   exports: [TypeOrmModule, UserService],
   controllers: [UserController],
   providers: [
     UserService,
-    AuthService,
+    LocalAuthService,
     UserRepository,
     ConfigService,
     JwtAuthGuard,

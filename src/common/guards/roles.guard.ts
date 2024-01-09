@@ -22,10 +22,6 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    console.log('user: ', user);
-    console.log('user.role: ', user.role);
-    console.log('requiredRoles: ', requiredRoles);
-    console.log('requiredRoles.some: ', requiredRoles.includes(user.role));
 
     // 사용자가 필요한 역할 중 하나라도 가지고 있는지 확인합니다.
     return requiredRoles.includes(user.role);

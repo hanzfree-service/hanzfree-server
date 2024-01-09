@@ -4,8 +4,8 @@ import { IsDate, IsInt, IsOptional, IsString } from 'class-validator';
 export class UpdateUserDto {
   @IsString()
   @IsOptional()
-  @ApiProperty({ description: '유저 이름', required: false })
-  readonly username?: string;
+  @ApiProperty({ description: '이메일', required: false })
+  readonly email?: string;
 
   @IsString()
   @IsOptional()
