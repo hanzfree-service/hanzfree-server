@@ -100,4 +100,10 @@ export class UserController {
     console.log('body', dto);
     return req.user;
   }
+
+  // @Get()
+  // async getMeetups(@Req() req: Request): Promise<any> {
+  //   console.log('cookie test: ');
+  //   console.log(req.cookies);
+  // }
 }

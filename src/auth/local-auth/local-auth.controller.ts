@@ -39,6 +39,8 @@ export class LocalAuthController {
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
 
+    console.log('access_token', access_token);
+
     // refresh token DB에 저장
     const refreshTokenInfo = await this.userService.setCurrentRefreshToken(
       refresh_token,
@@ -47,10 +49,15 @@ export class LocalAuthController {
 
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
-      httpOnly: true,
+      // httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      // secure: process.env.NODE_ENV === 'production', // HTTPS를 통해서만 쿠키 전송
     });
     res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
+      // httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     });
 
     return {
