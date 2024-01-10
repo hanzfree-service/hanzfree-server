@@ -106,4 +106,9 @@ export class UserController {
   //   console.log('cookie test: ');
   //   console.log(req.cookies);
   // }
+
+  @Get('/check')
+  async getHello(): Promise<string> {
+    return 'Hello World!';
+  }
 }
