@@ -8,6 +8,7 @@ import { GoodsModule } from './models/goods/goods.module';
 import { UserModule } from './models/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './common/scheduled/tasks.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -28,5 +29,6 @@ import { TasksService } from './common/scheduled/tasks.service';
     },
     TasksService,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
