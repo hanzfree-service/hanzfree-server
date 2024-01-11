@@ -73,7 +73,7 @@ export class LocalAuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtRefreshGuard)
+  @UseGuards(JwtAuthGuard)
   async logout(
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
