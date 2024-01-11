@@ -10,7 +10,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://hanzfree-web-xi.vercel.app'],
+    // origin: ['http://localhost:3000', 'https://hanzfree-web-xi.vercel.app'],
+    origin: true,
     credentials: true,
     exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
   });
@@ -26,7 +27,7 @@ async function bootstrap() {
         // maxAge: 60000, // 1 minute
         httpOnly: true,
         sameSite: 'none',
-        domain: 'vercel.app',
+        domain: 'hanzfree.co.kr',
       },
     }),
   );
