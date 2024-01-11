@@ -40,6 +40,7 @@ export class LocalAuthController {
     const refresh_token = await this.authService.generateRefreshToken(user);
 
     console.log('access_token', access_token);
+    console.log('refresh_token', refresh_token);
 
     // refresh token DB에 저장
     const refreshTokenInfo = await this.userService.setCurrentRefreshToken(
