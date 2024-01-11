@@ -55,12 +55,14 @@ export class LocalAuthController {
       // httpOnly: true,
       sameSite: 'none',
       secure: true,
+      domain: '.hanzfree.co.kr',
       // secure: process.env.NODE_ENV === 'production', // HTTPS를 통해서만 쿠키 전송
     });
     res.cookie('refresh_token', refresh_token, {
       // httpOnly: true,
       sameSite: 'none',
       secure: true,
+      domain: '.hanzfree.co.kr',
     });
     console.log('hi');
 
