@@ -78,11 +78,15 @@ export class LocalAuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    await this.userService.removeRefreshToken(req.user.id);
+    console.log('req', req.user);
+    const response = await this.userService.removeRefreshToken(req.user.id);
+
+    console.log('response', response);
 
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
 
+    console.log('in here');
     return 'logout success';
   }
 
