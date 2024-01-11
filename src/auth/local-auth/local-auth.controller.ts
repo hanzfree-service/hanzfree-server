@@ -35,6 +35,8 @@ export class LocalAuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
+    console.log('hi');
+
     const user = await this.authService.validateUser(loginDto);
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -60,6 +62,7 @@ export class LocalAuthController {
       sameSite: 'none',
       secure: true,
     });
+    console.log('hi');
 
     return {
       ...user,
