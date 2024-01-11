@@ -83,7 +83,12 @@ export class LocalAuthController {
 
     console.log('response', response);
 
-    res.clearCookie('access_token');
+    res.clearCookie('access_token', {
+      // httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: '.hanzfree.co.kr',
+    });
     res.clearCookie('refresh_token');
 
     console.log('in here');
