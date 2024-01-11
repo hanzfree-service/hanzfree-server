@@ -27,6 +27,11 @@ import { User } from './entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('/check')
+  async getHello(): Promise<string> {
+    return 'Hello World!';
+  }
+
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
@@ -106,9 +111,4 @@ export class UserController {
   //   console.log('cookie test: ');
   //   console.log(req.cookies);
   // }
-
-  @Get('/check')
-  async getHello(): Promise<string> {
-    return 'Hello World!';
-  }
 }
