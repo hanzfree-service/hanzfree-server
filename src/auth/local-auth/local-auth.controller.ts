@@ -59,7 +59,6 @@ export class LocalAuthController {
       secure: true,
       domain: '.hanzfree.co.kr',
     });
-    console.log('hi');
 
     return {
       ...user,
