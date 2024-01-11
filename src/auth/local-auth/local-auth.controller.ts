@@ -35,14 +35,9 @@ export class LocalAuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    console.log('hi');
-
     const user = await this.authService.validateUser(loginDto);
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
-
-    console.log('access_token', access_token.slice(-10));
-    console.log('refresh_token', refresh_token.slice(-10));
 
     // refresh token DB에 저장
     const refreshTokenInfo = await this.userService.setCurrentRefreshToken(
@@ -52,14 +47,14 @@ export class LocalAuthController {
 
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
       secure: true,
       domain: '.hanzfree.co.kr',
       // secure: process.env.NODE_ENV === 'production', // HTTPS를 통해서만 쿠키 전송
     });
     res.cookie('refresh_token', refresh_token, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
       secure: true,
       domain: '.hanzfree.co.kr',
@@ -78,20 +73,21 @@ export class LocalAuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    console.log('req', req.user);
-    const response = await this.userService.removeRefreshToken(req.user.id);
-
-    console.log('response', response);
+    await this.userService.removeRefreshToken(req.user.id);
 
     res.clearCookie('access_token', {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
       secure: true,
       domain: '.hanzfree.co.kr',
     });
-    res.clearCookie('refresh_token');
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: '.hanzfree.co.kr',
+    });
 
-    console.log('in here');
     return 'logout success';
   }
 
