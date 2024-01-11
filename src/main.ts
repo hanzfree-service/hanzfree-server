@@ -5,41 +5,35 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import express from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const server = express();
+  server.set('trust proxy', 1); // Express 인스턴스에 직접 설정
+
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
   app.setGlobalPrefix('api');
   app.enableCors({
-    // origin: ['http://localhost:3000', 'https://hanzfree-web-xi.vercel.app'],
     origin: true,
     credentials: true,
-    exposedHeaders: ['Authorization'], // * 사용할 헤더 추가.
+    exposedHeaders: ['Authorization'],
   });
   app.use(cookieParser());
-  app.use(
-    session({
-      secret: 'my-secret', // 세션을 암호화하기 위한 암호기 설정
-      resave: false, // 모든 request마다 기존에 있던 session에 아무런 변경 사항이 없을 시에도 그 session을 다시 저장하는 옵션
-      // saveUnitialized: 초기화되지 않은 세션을 저장할지 여부를 나타낸다.
-      saveUninitialized: false,
-      // 세션 쿠키에 대한 설정을 나타낸다.
-      cookie: {
-        // maxAge: 60000, // 1 minute
-        httpOnly: true,
-        sameSite: 'none',
-        domain: 'hanzfree.co.kr',
-      },
-    }),
-  );
-  app.use(passport.initialize());
-  app.use(passport.session());
   app.use(
     session({
       secret: 'my-secret',
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        sameSite: 'none',
+        domain: '.hanzfree.co.kr',
+      },
     }),
   );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
