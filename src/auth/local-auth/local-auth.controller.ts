@@ -78,20 +78,21 @@ export class LocalAuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    console.log('req', req.user);
-    const response = await this.userService.removeRefreshToken(req.user.id);
-
-    console.log('response', response);
+    await this.userService.removeRefreshToken(req.user.id);
 
     res.clearCookie('access_token', {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'none',
       secure: true,
       domain: '.hanzfree.co.kr',
     });
-    res.clearCookie('refresh_token');
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: '.hanzfree.co.kr',
+    });
 
-    console.log('in here');
     return 'logout success';
   }
 
