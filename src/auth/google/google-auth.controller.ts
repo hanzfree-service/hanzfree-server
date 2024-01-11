@@ -41,9 +41,15 @@ export class GoogleAuthenticationController {
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: '.hanzfree.co.kr',
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      domain: '.hanzfree.co.kr',
     });
 
     const responseData = {
