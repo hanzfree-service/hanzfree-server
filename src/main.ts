@@ -5,6 +5,18 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({
+  path: path.resolve(
+    process.env.NODE_ENV === 'dev'
+      ? '.dev.env'
+      : process.env.NODE_ENV === 'stage'
+        ? '.stage.env'
+        : '.local.env',
+  ),
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
