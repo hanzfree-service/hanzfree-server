@@ -48,16 +48,19 @@ export class LocalAuthController {
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
-      // secure: process.env.NODE_ENV === 'production', // HTTPS를 통해서만 쿠키 전송
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
 
     return {
@@ -76,15 +79,19 @@ export class LocalAuthController {
 
     res.clearCookie('access_token', {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
 
     return 'logout success';
@@ -112,6 +119,11 @@ export class LocalAuthController {
       res.setHeader('Authorization', 'Bearer ' + newAccessToken);
       res.cookie('access_token', newAccessToken, {
         httpOnly: true,
+        ...(process.env.NODE_ENV === 'production' && {
+          sameSite: 'none',
+          secure: true,
+          domain: '.hanzfree.co.kr',
+        }),
       });
 
       return { newAccessToken };

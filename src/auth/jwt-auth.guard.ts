@@ -24,8 +24,6 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest();
 
-    console.log('req cookies', request.cookies);
-
     try {
       const accessToken = request.cookies['access_token'];
 
@@ -57,7 +55,13 @@ export class JwtAuthGuard implements CanActivate {
           // 새로운 access_token을 쿠키에 설정
           request.res.cookie('access_token', newAccessToken, {
             httpOnly: true,
+            ...(process.env.NODE_ENV === 'production' && {
+              sameSite: 'none',
+              secure: true,
+              domain: '.hanzfree.co.kr',
+            }),
           });
+
           return user;
         } catch (refreshErr) {
           // refresh_token 검증 실패
