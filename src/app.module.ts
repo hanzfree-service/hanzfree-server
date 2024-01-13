@@ -15,6 +15,9 @@ import { AppController } from './app.controller';
     DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true, // 전역 설정으로 사용
+      envFilePath: [
+        process.env.NODE_ENV === 'production' ? '.production.env' : '.env',
+      ],
     }),
     ScheduleModule.forRoot(),
     UserModule,
