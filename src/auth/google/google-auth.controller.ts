@@ -19,6 +19,7 @@ export class GoogleAuthenticationController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
+    console.log('from', from);
     req.session.from = from;
     res.redirect('/api/auth/google/redirect');
   }
@@ -31,6 +32,7 @@ export class GoogleAuthenticationController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const from = req.session.from;
+    console.log('from', from);
     const user = req.user;
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -41,15 +43,19 @@ export class GoogleAuthenticationController {
     res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      domain: '.hanzfree.co.kr',
+      ...(process.env.NODE_ENV === 'production' && {
+        sameSite: 'none',
+        secure: true,
+        domain: '.hanzfree.co.kr',
+      }),
     });
 
     const responseData = {
