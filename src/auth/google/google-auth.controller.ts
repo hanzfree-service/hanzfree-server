@@ -19,7 +19,7 @@ export class GoogleAuthenticationController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('from', from);
+    console.log('from in login', from);
     req.session.from = from;
     res.redirect('/api/auth/google/redirect');
   }
@@ -32,7 +32,7 @@ export class GoogleAuthenticationController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const from = req.session.from;
-    console.log('from', from);
+    console.log('from in redirect', from);
     const user = req.user;
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -63,13 +63,13 @@ export class GoogleAuthenticationController {
     };
 
     // 소셜 로그인 정보 정상적으로 처리 후, 클라이언트로 redirect
-    if (from !== 'undefined') {
-      res.redirect(`${process.env.CLIENT_URL}/${from}`);
-    } else {
-      res.redirect(`${process.env.CLIENT_URL}`);
-    }
+    // if (from !== 'undefined') {
+    //   res.redirect(`${process.env.CLIENT_URL}/${from}`);
+    // } else {
+    //   res.redirect(`${process.env.CLIENT_URL}`);
+    // }
 
-    return res.json(responseData);
+    return res.redirect(`${process.env.CLIENT_URL}`);
   }
 
   // session 저장에 따른 유저 객체 인증/인가 테스트
