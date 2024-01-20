@@ -9,6 +9,7 @@ import { UserModule } from './models/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './common/scheduled/tasks.service';
 import { AppController } from './app.controller';
+import { ReservationModule } from './models/reservation/reservation.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AppController } from './app.controller';
     UserModule,
     GoodsModule,
     LocalAuthModule,
+    ReservationModule,
   ],
 
   providers: [

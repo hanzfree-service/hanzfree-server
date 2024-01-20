@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { Provider } from 'src/common/enums/provider.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { Good } from 'src/models/goods/entities/good.entity';
+import { Reservation } from 'src/models/reservation/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
@@ -25,8 +26,23 @@ export class User {
   @Column({ default: Role.USER })
   role: string;
 
+  @Column({ name: 'country' })
+  country: string;
+
+  @Column({ name: 'country_code' })
+  countryCode: string;
+
+  @Column({ name: 'dial_code' })
+  dialCode: string;
+
+  @Column({ name: 'phone_number' })
+  phoneNumber: string;
+
+  @OneToMany(() => Reservation, (reservation) => reservation.user)
+  reservations: Reservation[];
+
   @OneToMany(() => Good, (good) => good.user)
-  goods: Good[];
+  goods: Reservation[];
 
   @Column({ name: 'current_refresh_token', nullable: true })
   currentRefreshToken: string;

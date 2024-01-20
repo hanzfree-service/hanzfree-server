@@ -15,10 +15,7 @@ export class GoogleAuthenticationService {
   async validateAndSaveUser(
     socialLoginInfoDto: SocialLoginInfoDto,
   ): Promise<object | User> {
-    const {
-      email,
-      // refreshToken
-    } = socialLoginInfoDto;
+    const { email } = socialLoginInfoDto;
 
     const existingUser = await this.userService.findUserByEmail(email);
     console.log('existingUser', existingUser);

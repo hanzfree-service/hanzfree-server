@@ -18,7 +18,23 @@ export class CreateUserDto {
   @ApiProperty({ description: '유저 성' })
   readonly lastName: string;
 
+  // @IsString()
+  // @ApiProperty({ description: 'role' })
+  // readonly role: string;
+
   @IsString()
-  @ApiProperty({ description: 'role' })
-  readonly role: string;
+  @ApiProperty({ description: 'country' })
+  readonly country: string;
+
+  // @IsString()
+  // @ApiProperty({ description: 'country_code' })
+  // readonly countryCode: string;
+
+  @IsString()
+  @ApiProperty({ description: 'dial code' })
+  readonly dialCode: string;
+
+  @IsString()
+  @ApiProperty({ description: 'phone number' })
+  readonly phoneNumber: string;
 }

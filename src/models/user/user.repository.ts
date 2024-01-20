@@ -86,8 +86,14 @@ export class UserRepository {
   async createSocialUser(
     socialLoginInfoDto: SocialLoginInfoDto,
   ): Promise<User> {
-    const { email, firstName, lastName, socialProvider, externalId } =
-      socialLoginInfoDto;
+    const {
+      email,
+      firstName,
+      lastName,
+      socialProvider,
+      countryCode,
+      externalId,
+    } = socialLoginInfoDto;
 
     const user = this.userRepository.create({
       email: email,
@@ -96,6 +102,7 @@ export class UserRepository {
       isSocialAccountRegistered: true,
       socialProvider: socialProvider,
       externalId: externalId,
+      countryCode: countryCode,
     });
 
     return this.userRepository.save(user);

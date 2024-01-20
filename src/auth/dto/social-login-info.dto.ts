@@ -19,6 +19,10 @@ export class SocialLoginInfoDto {
   readonly socialProvider: string;
 
   @IsString()
+  @ApiProperty({ description: 'locale' })
+  readonly countryCode: string;
+
+  @IsString()
   @ApiProperty({ description: '구글 profile id' })
   readonly externalId: string;
 }
