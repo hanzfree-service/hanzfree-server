@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../jwt-auth.guard';
 import { GoogleAuthenticationController } from '../google/google-auth.controller';
 import { GoogleStrategy } from '../google/google-auth.strategy';
 import { GoogleAuthenticationService } from '../google/google-auth.service';
+import { ReservationModule } from 'src/models/reservation/reservation.module';
 
 @Module({
   imports: [
@@ -31,7 +32,6 @@ import { GoogleAuthenticationService } from '../google/google-auth.service';
       }),
       inject: [ConfigService],
     }),
-    forwardRef(() => UserModule),
     PassportModule.register({
       session: false,
     }),

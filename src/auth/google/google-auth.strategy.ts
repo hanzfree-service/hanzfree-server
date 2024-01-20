@@ -30,13 +30,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     profile: Profile,
     // done: VerifyCallback,
   ): Promise<object | User> {
-    const { name, emails, provider } = profile;
+    const { name, emails, provider, _json } = profile;
+
+    // console.log('googgle-profile', profile);
     const socialLoginUserInfo: SocialLoginInfoDto = {
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,
       socialProvider: provider,
       externalId: profile.id,
+      countryCode: _json.locale,
       // accessToken,
       // refreshToken,
     };

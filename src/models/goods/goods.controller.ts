@@ -33,7 +33,7 @@ export class GoodsController {
 
   @Get()
   // @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.USER)
+  // @Roles(Role.ADMIN, Role.USER)
   findAll(): Promise<Good[]> {
     return this.goodsService.findAll();
   }
