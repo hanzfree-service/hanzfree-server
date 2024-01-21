@@ -78,6 +78,9 @@ export class Reservation {
   @Column()
   price: number;
 
+  @Column({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date = new Date();
+
   @ManyToOne(() => User, (user) => user.reservations)
   user: User;
 }

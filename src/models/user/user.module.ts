@@ -11,6 +11,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtRefreshGuard } from 'src/auth/jwt-refresh.guard';
 import { JwtRefreshStrategy } from 'src/auth/jwt-refresh.strategy';
 import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
+import { ReservationService } from '../reservation/reservation.service';
+import { ReservationModule } from '../reservation/reservation.module';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
       inject: [ConfigService],
     }),
     forwardRef(() => LocalAuthModule),
+    ReservationModule,
   ],
   exports: [TypeOrmModule, UserService],
   controllers: [UserController],
@@ -36,6 +39,7 @@ import { LocalAuthModule } from 'src/auth/local-auth/local-auth.module';
     ConfigService,
     JwtAuthGuard,
     JwtRefreshStrategy,
+    ReservationService,
   ],
 })
 export class UserModule {}

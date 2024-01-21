@@ -21,11 +21,15 @@ import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { DeleteResult } from 'typeorm';
 import { User } from './entities/user.entity';
+import { ReservationService } from '../reservation/reservation.service';
 
 @ApiTags('user-controller')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly reservationService: ReservationService,
+  ) {}
 
   @Get('/check')
   async getHello(): Promise<string> {
@@ -36,6 +40,29 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
     return req.user;
+  }
+
+  @Get('/reservation/:reservationId')
+  @UseGuards(JwtAuthGuard)
+  async getReservationByReservationId(
+    @Req() req,
+    @Param('reservationId') reservationId: string,
+  ): Promise<any> {
+    // console.log('reservationId', reservationId);
+    const res = await this.reservationService.findAllByUserIdAndReservationId(
+      +req.user.id,
+      +reservationId,
+    );
+
+    return res;
+  }
+
+  @Get('/reservation')
+  @UseGuards(JwtAuthGuard)
+  async getAllReservation(@Req() req): Promise<any> {
+    const res = await this.reservationService.findAllByUserId(+req.user.id);
+
+    return res;
   }
 
   @Post('signup')
@@ -105,10 +132,4 @@ export class UserController {
     console.log('body', dto);
     return req.user;
   }
-
-  // @Get()
-  // async getMeetups(@Req() req: Request): Promise<any> {
-  //   console.log('cookie test: ');
-  //   console.log(req.cookies);
-  // }
 }

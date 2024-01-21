@@ -1763,6 +1763,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/nodemailer@npm:^6.4.14":
+  version: 6.4.14
+  resolution: "@types/nodemailer@npm:6.4.14"
+  dependencies:
+    "@types/node": "*"
+  checksum: 5f61f01dd736b17f431d1e8b320322f86460604b45df947fc4bc8999d7c7719405e349f7abba86e4fb100a464a30b52615d00dac03d9cb37562ff04487ebd310
+  languageName: node
+  linkType: hard
+
 "@types/oauth@npm:*":
   version: 0.9.4
   resolution: "@types/oauth@npm:0.9.4"
@@ -5097,6 +5106,7 @@ __metadata:
     "@types/express-session": ^1.17.10
     "@types/jest": ^29.5.2
     "@types/node": ^20.3.1
+    "@types/nodemailer": ^6.4.14
     "@types/passport": ^1.0.16
     "@types/passport-google-oauth20": ^2.0.14
     "@types/passport-jwt": ^3.0.13
@@ -5119,6 +5129,7 @@ __metadata:
     express-session: ^1.17.3
     jest: ^29.5.0
     mysql2: ^3.6.5
+    nodemailer: ^6.9.8
     passport: ^0.7.0
     passport-google-oauth20: ^2.0.0
     passport-jwt: ^4.0.1
@@ -7125,6 +7136,13 @@ __metadata:
   version: 2.0.14
   resolution: "node-releases@npm:2.0.14"
   checksum: 59443a2f77acac854c42d321bf1b43dea0aef55cd544c6a686e9816a697300458d4e82239e2d794ea05f7bbbc8a94500332e2d3ac3f11f52e4b16cbe638b3c41
+  languageName: node
+  linkType: hard
+
+"nodemailer@npm:^6.9.8":
+  version: 6.9.8
+  resolution: "nodemailer@npm:6.9.8"
+  checksum: 6499b93b7070a1b789ec00681ccbbf34180f127f1ce455b28201584b0974086a86be858062d41044df72ed7aba5649a40321a8e926367d2a1dfc0e65b7bf8838
   languageName: node
   linkType: hard
 
