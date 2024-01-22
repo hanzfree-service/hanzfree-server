@@ -43,6 +43,12 @@ export class CreateReservationDto {
   readonly arrivalTimeMin: string;
 
   @IsString()
+  readonly departureTimeHour: string;
+
+  @IsString()
+  readonly departureTimeMin: string;
+
+  @IsString()
   readonly flightNumber: string;
 
   @IsString()
@@ -50,6 +56,12 @@ export class CreateReservationDto {
 
   @IsString()
   readonly dropOffTimeMin: string;
+
+  @IsString()
+  readonly pickUpTimeHour: string;
+
+  @IsString()
+  readonly pickUpTimeMin: string;
 
   @IsString()
   readonly contactId: string;
