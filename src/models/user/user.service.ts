@@ -51,7 +51,9 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.findAll();
+    const res = this.userRepository.findAll();
+    // console.log('find All:', res);
+    return res;
   }
 
   async findUserById(id: number): Promise<User> {

@@ -8,15 +8,15 @@ import * as passport from 'passport';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-dotenv.config({
-  path: path.resolve(
-    process.env.NODE_ENV === 'dev'
-      ? '.dev.env'
-      : process.env.NODE_ENV === 'stage'
-        ? '.stage.env'
-        : '.local.env',
-  ),
-});
+// dotenv.config({
+//   path: path.resolve(
+//     process.env.NODE_ENV === 'dev'
+//       ? '.dev.env'
+//       : process.env.NODE_ENV === 'stage'
+//         ? '.stage.env'
+//         : '.local.env',
+//   ),
+// });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
