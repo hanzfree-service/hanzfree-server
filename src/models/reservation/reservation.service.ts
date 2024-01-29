@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Reservation } from './entities/reservation.entity';
 import * as nodemailer from 'nodemailer';
@@ -13,8 +13,12 @@ export class ReservationService {
   ) {}
 
   async create(createReservationDto: CreateReservationDto, userId: number) {
+    const createdDate = new Date(createReservationDto.date);
+    createdDate.setDate(createdDate.getDate() + 1);
+
     const reservation = this.reservationRepository.create({
       ...createReservationDto,
+      date: createdDate,
       user: { id: userId },
     });
 
@@ -25,8 +29,29 @@ export class ReservationService {
     return savedReservation;
   }
 
-  findAll() {
-    return this.reservationRepository.find();
+  async findAll(startDate?: string, endDate?: string, method?: string) {
+    const whereCondition = {};
+
+    if (startDate && endDate) {
+      const convertStartDate = new Date(startDate);
+      const convertEndDate = new Date(endDate);
+      convertStartDate.setDate(convertStartDate.getDate() + 1);
+      convertEndDate.setDate(convertEndDate.getDate() + 1);
+
+      whereCondition['date'] = Between(convertStartDate, convertEndDate);
+    }
+
+    if (method) {
+      if (method === 'airport to hotel') {
+        whereCondition['method'] = 'airportToHotel';
+      } else if (method === 'hotel to airport') {
+        whereCondition['method'] = 'hotelToAirport';
+      }
+    }
+
+    return this.reservationRepository.find({
+      where: whereCondition,
+    });
   }
 
   async findOne(id: number): Promise<Reservation | undefined> {

@@ -29,7 +29,7 @@ export class User {
   @Column({ name: 'country' })
   country: string;
 
-  @Column({ name: 'country_code' })
+  @Column({ name: 'country_code', nullable: true })
   countryCode: string;
 
   @Column({ name: 'dial_code' })
