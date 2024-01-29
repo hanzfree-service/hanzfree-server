@@ -36,31 +36,31 @@ export class Reservation {
   @Column({ name: 'airport_terminal' })
   airportTerminal: string;
 
-  @Column({ name: 'arrival_time_hour' })
+  @Column({ name: 'arrival_time_hour', nullable: true })
   arrivalTimeHour: string;
 
-  @Column({ name: 'arrival_time_minute' })
+  @Column({ name: 'arrival_time_minute', nullable: true })
   arrivalTimeMin: string;
 
   @Column({ name: 'flight_number' })
   flightNumber: string;
 
-  @Column({ name: 'drop_off_time_hour' })
+  @Column({ name: 'drop_off_time_hour', nullable: true })
   dropOffTimeHour: string;
 
-  @Column({ name: 'drop_off_time_minute' })
+  @Column({ name: 'drop_off_time_minute', nullable: true })
   dropOffTimeMin: string;
 
-  @Column({ name: 'departure_time_hour' })
+  @Column({ name: 'departure_time_hour', nullable: true })
   departureTimeHour: string;
 
-  @Column({ name: 'departure_time_minute' })
+  @Column({ name: 'departure_time_minute', nullable: true })
   departureTimeMin: string;
 
-  @Column({ name: 'pick_up_time_hour' })
+  @Column({ name: 'pick_up_time_hour', nullable: true })
   pickUpTimeHour: string;
 
-  @Column({ name: 'pick_up_time_minute' })
+  @Column({ name: 'pick_up_time_minute', nullable: true })
   pickUpTimeMin: string;
 
   @Column({ name: 'contact_id' })
