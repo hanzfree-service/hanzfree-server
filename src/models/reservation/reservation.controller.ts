@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -25,23 +26,20 @@ export class ReservationController {
     return this.reservationService.create(createReservationDto, req.user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.reservationService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateReservationDto: UpdateReservationDto,
-  // ) {
-  //   return this.reservationService.update(+id, updateReservationDto);
-  // }
+  @Get()
+  findAll(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('method') method?: string,
+  ) {
+    console.log('method in controller', method);
+    return this.reservationService.findAll(startDate, endDate, method);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
