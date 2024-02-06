@@ -26,23 +26,23 @@ export class User {
   @Column({ default: Role.USER })
   role: string;
 
-  @Column({ name: 'country' })
+  @Column({ name: 'country', nullable: true })
   country: string;
 
   @Column({ name: 'country_code', nullable: true })
   countryCode: string;
 
-  @Column({ name: 'dial_code' })
+  @Column({ name: 'dial_code', nullable: true })
   dialCode: string;
 
-  @Column({ name: 'phone_number' })
+  @Column({ name: 'phone_number', nullable: true })
   phoneNumber: string;
 
   @OneToMany(() => Reservation, (reservation) => reservation.user)
   reservations: Reservation[];
 
   @OneToMany(() => Good, (good) => good.user)
-  goods: Reservation[];
+  goods: Good[];
 
   @Column({ name: 'current_refresh_token', nullable: true })
   currentRefreshToken: string;
