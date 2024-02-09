@@ -30,10 +30,10 @@ export class Reservation {
   @Column({ name: 'hotel_address' })
   hotelAddress: string;
 
-  @Column({ name: 'hotel_representative_name' })
+  @Column({ name: 'hotel_representative_name', nullable: true })
   hotelRepresentativeName: string;
 
-  @Column({ name: 'airport_terminal' })
+  @Column({ name: 'airport_terminal', nullable: true })
   airportTerminal: string;
 
   @Column({ name: 'arrival_time_hour', nullable: true })
@@ -42,7 +42,7 @@ export class Reservation {
   @Column({ name: 'arrival_time_minute', nullable: true })
   arrivalTimeMin: string;
 
-  @Column({ name: 'flight_number' })
+  @Column({ name: 'flight_number', nullable: true })
   flightNumber: string;
 
   @Column({ name: 'drop_off_time_hour', nullable: true })
@@ -62,6 +62,12 @@ export class Reservation {
 
   @Column({ name: 'pick_up_time_minute', nullable: true })
   pickUpTimeMin: string;
+
+  @Column({ name: 'arrival_hotel_name', nullable: true })
+  arrivalHotelName: string;
+
+  @Column({ name: 'arrival_hotel_address', nullable: true })
+  arrivalHotelAddress: string;
 
   @Column({ name: 'contact_id' })
   contactId: string;
