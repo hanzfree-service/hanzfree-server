@@ -13,12 +13,8 @@ export class ReservationService {
   ) {}
 
   async create(createReservationDto: CreateReservationDto, userId: number) {
-    const createdDate = new Date(createReservationDto.date);
-    createdDate.setDate(createdDate.getDate() + 1);
-
     const reservation = this.reservationRepository.create({
       ...createReservationDto,
-      date: createdDate,
       user: { id: userId },
     });
 

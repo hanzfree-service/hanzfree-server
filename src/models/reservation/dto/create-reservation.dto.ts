@@ -64,6 +64,12 @@ export class CreateReservationDto {
   readonly pickUpTimeMin: string;
 
   @IsString()
+  readonly arrivalHotelName: string;
+
+  @IsString()
+  readonly arrivalHotelAddress: string;
+
+  @IsString()
   readonly contactId: string;
 
   @IsString()
