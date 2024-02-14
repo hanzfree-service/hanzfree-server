@@ -25,7 +25,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://www.hanzfree.co.kr',
-      'https://hanzfree.co.kr',
+      // 'https://hanzfree.co.kr',
     ],
     // origin: true,
     credentials: true,
