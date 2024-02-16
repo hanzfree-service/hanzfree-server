@@ -63,7 +63,10 @@ export class ReservationService {
   }
 
   async findAllByUserId(userId: number) {
-    return this.reservationRepository.find({ where: { user: { id: userId } } });
+    return this.reservationRepository.find({
+      where: { user: { id: userId } },
+      order: { id: 'DESC' },
+    });
   }
 
   async findAllByUserIdAndReservationId(userId: number, reservationId: number) {
