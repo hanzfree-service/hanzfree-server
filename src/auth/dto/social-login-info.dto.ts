@@ -15,6 +15,10 @@ export class SocialLoginInfoDto {
   readonly lastName: string;
 
   @IsString()
+  @ApiProperty({ description: '구글 프로필 이미지' })
+  readonly profileImg: string;
+
+  @IsString()
   @ApiProperty({ description: '소셜' })
   readonly socialProvider: string;
 

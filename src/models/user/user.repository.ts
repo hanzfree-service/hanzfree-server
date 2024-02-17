@@ -19,6 +19,7 @@ export class UserRepository {
 
     const user = this.userRepository.create({
       ...createUserDto,
+      profileImg: 'http://www.gravatar.com/avatar/?d=mp',
       password: hashedPassword,
     });
 
@@ -90,6 +91,7 @@ export class UserRepository {
       email,
       firstName,
       lastName,
+      profileImg,
       socialProvider,
       countryCode,
       externalId,
@@ -99,6 +101,7 @@ export class UserRepository {
       email: email,
       firstName: firstName,
       lastName: lastName,
+      profileImg: profileImg,
       isSocialAccountRegistered: true,
       socialProvider: socialProvider,
       externalId: externalId,

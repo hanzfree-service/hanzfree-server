@@ -38,6 +38,9 @@ export class User {
   @Column({ name: 'phone_number', nullable: true })
   phoneNumber: string;
 
+  @Column({ name: 'profile_img', nullable: true })
+  profileImg: string;
+
   @OneToMany(() => Reservation, (reservation) => reservation.user)
   reservations: Reservation[];
 
