@@ -11,28 +11,13 @@ export class GoogleAuthenticationController {
     private readonly authService: LocalAuthService,
   ) {}
 
-  // login 라우트 핸들러
-  @Get('/login')
-  // @UseGuards(GoogleAuthGuard)
-  async handleLogin(
-    @Query('from') from: string,
-    @Req() req: any,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    console.log('from in login', from);
-    req.session.from = from;
-    res.redirect('/api/auth/google/redirect');
-  }
-
-  // login 성공 시, redirect를 수행할 라우트 핸들러
+  // 구글 로그인 성공 시, redirect를 수행할 라우트 핸들러
   @Get('/redirect')
   @UseGuards(GoogleAuthGuard)
   async handleRedirect(
     @Req() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const from = req.session.from;
-    console.log('from in redirect', from);
     const user = req.user;
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -58,16 +43,11 @@ export class GoogleAuthenticationController {
       }),
     });
 
-    const responseData = {
-      email: user.email,
-    };
-
-    // 소셜 로그인 정보 정상적으로 처리 후, 클라이언트로 redirect
-    // if (from !== 'undefined') {
-    //   res.redirect(`${process.env.CLIENT_URL}/${from}`);
-    // } else {
-    //   res.redirect(`${process.env.CLIENT_URL}`);
-    // }
+    if (req.redirect !== 'undefined') {
+      res.redirect(`${process.env.CLIENT_URL}/${req.redirect}`);
+    } else {
+      res.redirect(`${process.env.CLIENT_URL}`);
+    }
 
     return res.redirect(`${process.env.CLIENT_URL}`);
   }

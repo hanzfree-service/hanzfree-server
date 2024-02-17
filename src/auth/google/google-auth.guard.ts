@@ -6,15 +6,22 @@ export class GoogleAuthGuard extends AuthGuard('google') {
   constructor() {
     super();
   }
+
+  private static activate = false;
+  private static redirect;
+
   async canActivate(context: ExecutionContext) {
+    if (!GoogleAuthGuard.activate) {
+      GoogleAuthGuard.redirect = context.switchToHttp().getRequest().query.from;
+      GoogleAuthGuard.activate = true;
+    }
+
     const activate = (await super.canActivate(context)) as boolean;
     const request = context.switchToHttp().getRequest();
+    context.getArgs()[0]['redirect'] = GoogleAuthGuard.redirect;
 
-    // console.log('request', request);
-    const redirect = request.query.redirect;
-
-    // console.log('redirect', redirect);
     await super.logIn(request);
+    GoogleAuthGuard.activate = false;
     return activate;
   }
 }
