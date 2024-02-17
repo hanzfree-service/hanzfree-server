@@ -26,6 +26,14 @@ export class ReservationController {
     return this.reservationService.create(createReservationDto, req.user.id);
   }
 
+  @Get('count-by-method')
+  async countReservationsByMethod(@Req() req) {
+    const counts = await this.reservationService.countReservationsByMethod(
+      req.user.id,
+    );
+    return counts;
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationService.findOne(+id);
