@@ -75,6 +75,22 @@ export class ReservationService {
     });
   }
 
+  async countReservationsByMethod(userId: number) {
+    const qb = this.reservationRepository.createQueryBuilder('reservation');
+    const counts = await qb
+      .where('reservation.user.id = :userId', { userId })
+      .select('method')
+      .addSelect('COUNT(method)', 'count')
+      .groupBy('method')
+      .getRawMany();
+
+    return counts.reduce((acc, count) => {
+      acc[count.method] = count.count;
+
+      return acc;
+    }, {});
+  }
+
   async sendReservationConfirmationEmail(reservation) {
     try {
       // Nodemailer transporter 생성

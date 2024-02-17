@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -69,6 +70,11 @@ export class UserController {
   signup(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.signup(createUserDto);
   }
+
+  // @Post('image')
+  // async saveImage(@UploadedFile() file: Express.Multer.File) {
+  //   return await this.boardService.imageUpload(file);
+  // }
 
   @Patch(':userId')
   @ApiOperation({
