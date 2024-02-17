@@ -18,7 +18,7 @@ export class GoogleAuthenticationService {
     const { email } = socialLoginInfoDto;
 
     const existingUser = await this.userService.findUserByEmail(email);
-    console.log('existingUser', existingUser);
+    // console.log('existingUser', existingUser);
 
     if (existingUser) {
       if (existingUser.socialProvider !== Provider.GOOGLE) {

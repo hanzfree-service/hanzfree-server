@@ -14,10 +14,7 @@ export class GoogleAuthenticationController {
   // 구글 로그인 성공 시, redirect를 수행할 라우트 핸들러
   @Get('/redirect')
   @UseGuards(GoogleAuthGuard)
-  async handleRedirect(
-    @Req() req: any,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async handleRedirect(@Req() req: any, @Res() res: Response) {
     const user = req.user;
     const access_token = await this.authService.generateAccessToken(user);
     const refresh_token = await this.authService.generateRefreshToken(user);
@@ -25,7 +22,6 @@ export class GoogleAuthenticationController {
     // refresh token DB에 저장
     await this.userService.setCurrentRefreshToken(refresh_token, user.id);
 
-    res.setHeader('Authorization', 'Bearer ' + [access_token, refresh_token]);
     res.cookie('access_token', access_token, {
       httpOnly: true,
       ...(process.env.NODE_ENV === 'production' && {
@@ -44,12 +40,10 @@ export class GoogleAuthenticationController {
     });
 
     if (req.redirect !== 'undefined') {
-      res.redirect(`${process.env.CLIENT_URL}/${req.redirect}`);
+      return res.redirect(`${process.env.CLIENT_URL}/${req.redirect}`);
     } else {
-      res.redirect(`${process.env.CLIENT_URL}`);
+      return res.redirect(`${process.env.CLIENT_URL}`);
     }
-
-    return res.redirect(`${process.env.CLIENT_URL}`);
   }
 
   // session 저장에 따른 유저 객체 인증/인가 테스트
