@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production pm2 start dist/main.js",
+    "start:prod": "cross-env NODE_ENV=production pm2 start dist/src/main.js",
     "typeorm:dev": "yarn build && cross-env NODE_ENV=development yarn typeorm-ts-node-commonjs",
     "typeorm:prod": "yarn build && cross-env NODE_ENV=production yarn typeorm-ts-node-commonjs",
     "typeorm:migration:dev": "yarn typeorm:dev migration:run -d dist/typeOrm.config.js",
