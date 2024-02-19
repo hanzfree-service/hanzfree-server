@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -89,10 +93,31 @@ export class ReservationService {
     });
   }
 
-  async findAllByUserIdAndReservationId(userId: number, reservationId: string) {
-    return this.reservationRepository.findOne({
-      where: { user: { id: userId }, bookingNumber: reservationId },
+  async findAllByUserIdAndReservationId(userId: number, bookingNumber: string) {
+    const reservation = await this.reservationRepository.findOne({
+      where: {
+        user: { id: userId },
+        bookingNumber,
+      },
     });
+
+    // console.log('reservation', reservation);
+
+    if (!reservation) {
+      const isUserAuthorized = await this.reservationRepository.count({
+        where: { bookingNumber },
+      });
+
+      // console.log('isUserAuthorized', isUserAuthorized);
+
+      if (isUserAuthorized) {
+        throw new ForbiddenException('접근 권한이 없습니다.');
+      }
+
+      throw new NotFoundException(`예약 내역이 없습니다.`);
+    }
+
+    return reservation;
   }
 
   async countReservationsByMethod(userId: number) {

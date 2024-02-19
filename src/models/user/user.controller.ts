@@ -43,16 +43,16 @@ export class UserController {
     return req.user;
   }
 
-  @Get('/reservation/:reservationId')
+  @Get('/reservation/:bookingNumber')
   @UseGuards(JwtAuthGuard)
   async getReservationByReservationId(
     @Req() req,
-    @Param('reservationId') reservationId: string,
+    @Param('bookingNumber') bookingNumber: string,
   ): Promise<any> {
     // console.log('reservationId', reservationId);
     const res = await this.reservationService.findAllByUserIdAndReservationId(
       +req.user.id,
-      reservationId,
+      bookingNumber,
     );
 
     return res;
