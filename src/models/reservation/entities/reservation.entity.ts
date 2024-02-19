@@ -6,6 +6,9 @@ export class Reservation {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: 'booking_number' })
+  bookingNumber: string;
+
   @Column()
   email: string;
 
