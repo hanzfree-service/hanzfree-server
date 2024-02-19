@@ -21,6 +21,7 @@ export class ReservationService {
     const reservation = this.reservationRepository.create({
       ...createReservationDto,
       user: { id: userId },
+      bookingNumber: await this.generateUniqueBookingNumber(),
     });
 
     const savedReservation = await this.reservationRepository.save(reservation);
