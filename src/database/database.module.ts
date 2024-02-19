@@ -14,9 +14,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE'), // 상용 서버에서는 false로 바꿔야함
-        timezone: 'z',
+        // synchronize:
+        //   configService.get<string>('DB_SYNCHRONIZE') === 'true' ? true : false,
+        synchronize: false,
+        timezone: 'Z',
         logging: true,
+        migrations: ['dist/database/migrations/*.js'],
+        migrationsTableName: 'migration_table',
+        migrationsRun: false,
       }),
       inject: [ConfigService],
     }),

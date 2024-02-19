@@ -54,4 +54,5 @@ lerna-debug.log*
 .pnp.*
 
 .env
+.development.env
 .production.env
