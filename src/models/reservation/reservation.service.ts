@@ -4,6 +4,7 @@ import { Between, Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Reservation } from './entities/reservation.entity';
 import * as nodemailer from 'nodemailer';
+import { generateBookingNumber } from 'src/common/utils';
 
 @Injectable()
 export class ReservationService {
@@ -23,6 +24,25 @@ export class ReservationService {
     await this.sendReservationConfirmationEmail(createReservationDto);
 
     return savedReservation;
+  }
+
+  async generateUniqueBookingNumber() {
+    let bookingNumber;
+    do {
+      bookingNumber = generateBookingNumber();
+    } while (await this.isBookingNumberExists(bookingNumber));
+
+    return bookingNumber;
+  }
+
+  async isBookingNumberExists(bookingNumber) {
+    const qb = this.reservationRepository.createQueryBuilder('reservation');
+    const result = await qb
+      .where('reservation.bookingNumber = :bookingNumber', { bookingNumber })
+      .select('COUNT(*)')
+      .getRawOne();
+
+    return result > 0;
   }
 
   async findAll(startDate?: string, endDate?: string, method?: string) {
@@ -69,9 +89,9 @@ export class ReservationService {
     });
   }
 
-  async findAllByUserIdAndReservationId(userId: number, reservationId: number) {
+  async findAllByUserIdAndReservationId(userId: number, reservationId: string) {
     return this.reservationRepository.findOne({
-      where: { user: { id: userId }, id: reservationId },
+      where: { user: { id: userId }, bookingNumber: reservationId },
     });
   }
 

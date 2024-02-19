@@ -52,7 +52,7 @@ export class UserController {
     // console.log('reservationId', reservationId);
     const res = await this.reservationService.findAllByUserIdAndReservationId(
       +req.user.id,
-      +reservationId,
+      reservationId,
     );
 
     return res;
