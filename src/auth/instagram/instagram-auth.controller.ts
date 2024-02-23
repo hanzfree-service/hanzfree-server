@@ -1,0 +1,20 @@
+import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
+import { UserService } from 'src/models/user/user.service';
+import { LocalAuthService } from '../local-auth/local-auth.service';
+// import { GoogleAuthGuard } from './google-auth.guard';
+
+@Controller('auth/instagram')
+export class GoogleAuthenticationController {
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: LocalAuthService,
+  ) {}
+
+  // 구글 로그인 성공 시, redirect를 수행할 라우트 핸들러
+  @Get('/redirect')
+  //   @UseGuards(GoogleAuthGuard)
+  async handleRedirect(@Req() req: any, @Res() res: Response) {
+    console.log('insta login test');
+  }
+}
