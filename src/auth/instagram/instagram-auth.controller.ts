@@ -5,7 +5,7 @@ import { LocalAuthService } from '../local-auth/local-auth.service';
 // import { GoogleAuthGuard } from './google-auth.guard';
 
 @Controller('auth/instagram')
-export class GoogleAuthenticationController {
+export class InstagramAuthenticationController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: LocalAuthService,
@@ -14,7 +14,9 @@ export class GoogleAuthenticationController {
   // 구글 로그인 성공 시, redirect를 수행할 라우트 핸들러
   @Get('/redirect')
   //   @UseGuards(GoogleAuthGuard)
-  async handleRedirect(@Req() req: any, @Res() res: Response) {
+  async handleRedirect(@Req() req: any) {
     console.log('insta login test');
+
+    return true;
   }
 }

@@ -16,6 +16,7 @@ import { GoogleAuthenticationController } from '../google/google-auth.controller
 import { GoogleStrategy } from '../google/google-auth.strategy';
 import { GoogleAuthenticationService } from '../google/google-auth.service';
 import { ReservationModule } from 'src/models/reservation/reservation.module';
+import { InstagramAuthenticationController } from '../instagram/instagram-auth.controller';
 
 @Module({
   imports: [
@@ -37,7 +38,11 @@ import { ReservationModule } from 'src/models/reservation/reservation.module';
     }),
   ],
   exports: [LocalAuthService, JwtAuthGuard, JwtRefreshStrategy],
-  controllers: [LocalAuthController, GoogleAuthenticationController],
+  controllers: [
+    LocalAuthController,
+    GoogleAuthenticationController,
+    InstagramAuthenticationController,
+  ],
   providers: [
     LocalAuthService,
     LocalStrategy,
