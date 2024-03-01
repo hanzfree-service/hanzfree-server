@@ -99,7 +99,7 @@ export class InstagramAuthenticationService {
       const response = await axios.get(
         `https://www.instagram.com/${username}/`,
       );
-      const $ = cheerio.load(response.data);
+      const $ = await cheerio.load(response.data);
       console.log('$', $);
       console.log('response', response.status);
 
