@@ -14,20 +14,23 @@ export class InstagramAuthenticationService {
   ) {}
 
   async getInstagramUserToken(code: string) {
+    const formData = new URLSearchParams();
+    formData.append('client_id', '923428659046986');
+    formData.append('client_secret', '4b385f4aef958238d3ef3dd3b41c99fc');
+    formData.append('grant_type', 'authorization_code');
+    formData.append(
+      'redirect_uri',
+      'https://api.hanzfree.co.kr/api/auth/instagram/token',
+    );
+    formData.append('code', code);
+
     const res = await axios.post(
       'https://api.instagram.com/oauth/access_token',
-
+      formData.toString(),
       {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-          cilent_id: '923428659046986',
-          client_secret: '4b385f4aef958238d3ef3dd3b41c99fc',
-          grant_type: 'authorization_code',
-          redirect_uri: 'https://api.hanzfree.co.kr/api/auth/instagram/token',
-          code: code,
-        }),
       },
     );
 
