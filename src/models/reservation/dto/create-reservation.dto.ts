@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class CreateReservationDto {
   //   @IsString()
   //   @ApiProperty({ description: '이메일' })
   //   readonly email: string;
+
+  @IsString()
+  readonly bookingNumber: string;
 
   @IsString()
   readonly email: string;
