@@ -20,7 +20,7 @@ export class InstagramAuthenticationService {
     formData.append('grant_type', 'authorization_code');
     formData.append(
       'redirect_uri',
-      'https://api.hanzfree.co.kr/api/auth/instagram/token',
+      'https://api.hanzfree.co.kr/api/auth/instagram/redirect',
     );
     formData.append('code', code);
 
