@@ -23,7 +23,7 @@ export class InstagramAuthenticationController {
       user_id,
     );
 
-    console.log('res', res);
+    // console.log('res', res);
     // return true;
   }
 

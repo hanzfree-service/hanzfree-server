@@ -47,6 +47,7 @@ export class InstagramAuthenticationService {
 
     this.getProfile(username)
       .then((profileInfo) => {
+        console.log('profileInfo', profileInfo);
         if (profileInfo) {
           console.log('프로필 정보', profileInfo);
           this.validateAndSaveUser(profileInfo)
