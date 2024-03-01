@@ -17,15 +17,25 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('reservation-controller')
 @Controller('reservation')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Req() req, @Body() createReservationDto: CreateReservationDto) {
     return this.reservationService.create(createReservationDto, req.user.id);
   }
 
+  @Patch(':bookingNumber')
+  update(
+    @Param('bookingNumber') bookingNumber: string,
+    @Body() updateReservationDto: any,
+  ) {
+    return this.reservationService.update(bookingNumber, updateReservationDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('count-by-method')
   async countReservationsByMethod(@Req() req) {
     const counts = await this.reservationService.countReservationsByMethod(
@@ -34,11 +44,13 @@ export class ReservationController {
     return counts;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.reservationService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(
     @Query('startDate') startDate?: string,
