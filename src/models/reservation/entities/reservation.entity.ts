@@ -92,4 +92,7 @@ export class Reservation {
 
   @ManyToOne(() => User, (user) => user.reservations)
   user: User;
+
+  @Column({ name: 'payment_status', default: false })
+  paymentStatus: boolean;
 }
