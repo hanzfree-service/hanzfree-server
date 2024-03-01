@@ -21,13 +21,9 @@ export class ReservationService {
     const reservation = this.reservationRepository.create({
       ...createReservationDto,
       user: { id: userId },
-      bookingNumber: await this.generateUniqueBookingNumber(),
     });
 
     const savedReservation = await this.reservationRepository.save(reservation);
-
-    await this.sendReservationConfirmationEmail(createReservationDto);
-
     return savedReservation;
   }
 
@@ -89,7 +85,7 @@ export class ReservationService {
 
   async findAllByUserId(userId: number) {
     return this.reservationRepository.find({
-      where: { user: { id: userId } },
+      where: { user: { id: userId }, paymentStatus: true },
       order: { id: 'DESC' },
     });
   }
@@ -98,18 +94,15 @@ export class ReservationService {
     const reservation = await this.reservationRepository.findOne({
       where: {
         user: { id: userId },
+        paymentStatus: true,
         bookingNumber,
       },
     });
 
-    // console.log('reservation', reservation);
-
     if (!reservation) {
       const isUserAuthorized = await this.reservationRepository.count({
-        where: { bookingNumber },
+        where: { bookingNumber, paymentStatus: true },
       });
-
-      // console.log('isUserAuthorized', isUserAuthorized);
 
       if (isUserAuthorized) {
         throw new ForbiddenException('접근 권한이 없습니다.');
@@ -125,6 +118,7 @@ export class ReservationService {
     const qb = this.reservationRepository.createQueryBuilder('reservation');
     const counts = await qb
       .where('reservation.user.id = :userId', { userId })
+      .andWhere('reservation.paymentStatus = :true', { true: true })
       .select('method')
       .addSelect('COUNT(method)', 'count')
       .groupBy('method')
@@ -135,6 +129,30 @@ export class ReservationService {
 
       return acc;
     }, {});
+  }
+
+  async update(bookingNumber: string, updateReservationDto: any) {
+    if (updateReservationDto.paymentStatus === 'confirmed') {
+      const reservation = await this.reservationRepository.findOne({
+        where: {
+          bookingNumber,
+        },
+      });
+
+      if (!reservation) {
+        throw new NotFoundException(
+          `Reservation with ID ${bookingNumber} not found`,
+        );
+      }
+      const updatedReservation = await this.reservationRepository.save({
+        ...reservation,
+        paymentStatus: true,
+      });
+
+      await this.sendReservationConfirmationEmail(updatedReservation);
+
+      return updatedReservation;
+    }
   }
 
   async sendReservationConfirmationEmail(reservation) {
