@@ -146,6 +146,7 @@ export class ReservationService {
       }
       const updatedReservation = await this.reservationRepository.save({
         ...reservation,
+        email: updateReservationDto.email,
         paymentStatus: true,
       });
 
