@@ -5,6 +5,7 @@ import { User } from 'src/models/user/entities/user.entity';
 import { Provider } from 'src/common/enums/provider.enum';
 import { LocalAuthService } from '../local-auth/local-auth.service';
 import axios from 'axios';
+import cheerio from 'cheerio';
 
 @Injectable()
 export class InstagramAuthenticationService {
@@ -42,13 +43,32 @@ export class InstagramAuthenticationService {
       `https://graph.instagram.com/7327583987290490?fields=id,username&access_token=${accessToken}`,
     );
 
-    return res;
+    const { id, username } = res.data;
+
+    this.getProfile(username)
+      .then((profileInfo) => {
+        if (profileInfo) {
+          console.log('프로필 정보', profileInfo);
+          this.validateAndSaveUser(profileInfo)
+            .then(() => {
+              console.log('사용자 프로필을 유효하게 검증하고 저장했습니다.');
+            })
+            .catch((error) => {
+              console.error('Error during validation and saving:', error);
+            });
+        } else {
+          console.log('프로필 이미지를 가져올 수 없습니다.');
+        }
+      })
+      .catch((error) => console.error('Error:', error));
+
+    return res.data;
   }
 
   async validateAndSaveUser(instaLoginDto: any) {
-    const { id, username } = instaLoginDto;
-    console.log('id', id);
-    console.log('username', username);
+    const { name, profileImageUrl } = instaLoginDto;
+    console.log('name', name);
+    console.log('profileImageUrl', profileImageUrl);
 
     // const existingUser = await this.userService.findUserByEmail(id);
     // // console.log('existingUser', existingUser);
@@ -71,6 +91,26 @@ export class InstagramAuthenticationService {
     // }
 
     // return this.userService.createSocialUser(socialLoginInfoDto);
+  }
+
+  async getProfile(username) {
+    try {
+      const response = await axios.get(
+        `https://www.instagram.com/${username}/`,
+      );
+      const $ = cheerio.load(response.data);
+      const fullName = $('meta[property="og:title"]')
+        .attr('content')
+        .split('•')[0];
+      const _username = fullName.split(' ')[0].trim();
+      const userId = fullName.split(' ')[1].trim().slice(2).slice(0, -1);
+
+      const profileImageUrl = $('meta[property="og:image"]').attr('content');
+      return { name: _username || userId, profileImageUrl };
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
   }
 
   async findUserById(id: number) {
