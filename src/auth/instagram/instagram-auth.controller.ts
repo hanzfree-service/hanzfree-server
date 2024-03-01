@@ -15,7 +15,7 @@ export class InstagramAuthenticationController {
   @Get('/redirect')
   //   @UseGuards(GoogleAuthGuard)
   async handleRedirect(@Req() req: any) {
-    console.log('insta login test');
+    console.log('insta login test', req);
 
     return true;
   }
