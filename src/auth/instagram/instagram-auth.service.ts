@@ -37,34 +37,40 @@ export class InstagramAuthenticationService {
     return res.data;
   }
 
-  async getInstagramUser(accessToken: string) {}
+  async getInstagramUser(accessToken: string, user_id: string) {
+    const res = await axios.get(
+      `https://graph.instagram.com/7327583987290490?fields=id,username&access_token=${accessToken}`,
+    );
 
-  async validateAndSaveUser(
-    socialLoginInfoDto: SocialLoginInfoDto,
-  ): Promise<object | User> {
-    const { email } = socialLoginInfoDto;
+    return res;
+  }
 
-    const existingUser = await this.userService.findUserByEmail(email);
-    // console.log('existingUser', existingUser);
+  async validateAndSaveUser(instaLoginDto: any) {
+    const { id, username } = instaLoginDto;
+    console.log('id', id);
+    console.log('username', username);
 
-    if (existingUser) {
-      if (existingUser.socialProvider !== Provider.GOOGLE) {
-        return {
-          existingUser: existingUser,
-          msg: '해당 이메일을 사용중인 계정이 존재합니다.',
-        };
-      } else {
-        // TODO: refreshToken 업데이트
-        // const updateUserWithRefToken: User =
-        //   await this.userService.updateSocialUserRefToken(
-        //     existingUser.id,
-        //     refreshToken,
-        //   );
-        return existingUser;
-      }
-    }
+    // const existingUser = await this.userService.findUserByEmail(id);
+    // // console.log('existingUser', existingUser);
 
-    return this.userService.createSocialUser(socialLoginInfoDto);
+    // if (existingUser) {
+    //   if (existingUser.socialProvider !== Provider.INSTAGRAM) {
+    //     return {
+    //       existingUser: existingUser,
+    //       msg: '해당 이메일을 사용중인 계정이 존재합니다.',
+    //     };
+    //   } else {
+    //     // TODO: refreshToken 업데이트
+    //     // const updateUserWithRefToken: User =
+    //     //   await this.userService.updateSocialUserRefToken(
+    //     //     existingUser.id,
+    //     //     refreshToken,
+    //     //   );
+    //     return existingUser;
+    //   }
+    // }
+
+    // return this.userService.createSocialUser(socialLoginInfoDto);
   }
 
   async findUserById(id: number) {
