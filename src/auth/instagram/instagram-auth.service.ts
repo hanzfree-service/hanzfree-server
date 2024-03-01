@@ -103,9 +103,8 @@ export class InstagramAuthenticationService {
       console.log('$', $);
       console.log('response', response.status);
 
-      const fullName = $('meta[property="og:title"]')
-        .attr('content')
-        .split('•')[0];
+      const fullName = $('meta[property="og:title"]').attr('content');
+      // .split('•')[0];
       console.log('fullName', fullName);
       const _username = fullName.split(' ')[0].trim();
       console.log('_username', _username);
