@@ -15,6 +15,9 @@ export class AppController {
           `https://www.instagram.com/${username}/`,
         );
         const $ = cheerio.load(response.data);
+        console.log('$', $);
+        console.log('response', response.status);
+
         const fullName = $('meta[property="og:title"]')
           .attr('content')
           .split('•')[0];
