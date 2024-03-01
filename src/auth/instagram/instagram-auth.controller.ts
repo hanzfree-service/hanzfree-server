@@ -16,10 +16,10 @@ export class InstagramAuthenticationController {
   // 인스타 로그인 성공 시, redirect를 수행할 라우트 핸들러
   @Get('/redirect')
   async handleRedirect(@Req() req: any, @Query('code') code: string) {
-    console.log('insta login test', req.query, code);
+    console.log('insta login test', code);
 
-    // this.instagramService.getInstagramUserToken(code);
-    return true;
+    this.instagramService.getInstagramUserToken(code);
+    // return true;
   }
 
   @Get('/token')

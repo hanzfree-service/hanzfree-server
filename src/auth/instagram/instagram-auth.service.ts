@@ -18,7 +18,7 @@ export class InstagramAuthenticationService {
       'https://api.instagram.com/oauth/access_token',
       {
         body: JSON.stringify({
-          cilent_id: 923428659046986,
+          cilent_id: '923428659046986',
           client_secret: '4b385f4aef958238d3ef3dd3b41c99fc',
           grant_type: 'authorization_code',
           redirect_uri: 'https://api.hanzfree.co.kr/api/auth/instagram/token',
