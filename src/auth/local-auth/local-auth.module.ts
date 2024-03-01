@@ -17,6 +17,7 @@ import { GoogleStrategy } from '../google/google-auth.strategy';
 import { GoogleAuthenticationService } from '../google/google-auth.service';
 import { ReservationModule } from 'src/models/reservation/reservation.module';
 import { InstagramAuthenticationController } from '../instagram/instagram-auth.controller';
+import { InstagramAuthenticationService } from '../instagram/instagram-auth.service';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { InstagramAuthenticationController } from '../instagram/instagram-auth.c
     UserRepository,
     ConfigService,
     GoogleAuthenticationService,
+    InstagramAuthenticationService,
   ],
 })
 export class LocalAuthModule {}
