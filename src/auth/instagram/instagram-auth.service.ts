@@ -103,10 +103,14 @@ export class InstagramAuthenticationService {
       const fullName = $('meta[property="og:title"]')
         .attr('content')
         .split('•')[0];
+      console.log('fullName', fullName);
       const _username = fullName.split(' ')[0].trim();
+      console.log('_username', _username);
       const userId = fullName.split(' ')[1].trim().slice(2).slice(0, -1);
+      console.log('userId', userId);
 
       const profileImageUrl = $('meta[property="og:image"]').attr('content');
+      console.log('profileImageUrl', profileImageUrl);
       return { name: _username || userId, profileImageUrl };
     } catch (error) {
       console.error('Error:', error);
