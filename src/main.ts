@@ -25,6 +25,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://www.hanzfree.co.kr',
+      'https://hanzfree-payment.myshopify.com',
       // 'https://hanzfree.co.kr',
     ],
     // origin: true,
