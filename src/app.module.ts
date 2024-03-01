@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpModule } from '@nestjs/axios';
 import { LocalAuthModule } from './auth/local-auth/local-auth.module';
 import { ApiResponseInterceptor } from './common/interceptors/response.interceptor';
 import { DatabaseModule } from './database/database.module';
@@ -27,6 +28,7 @@ import { ReservationModule } from './models/reservation/reservation.module';
     GoodsModule,
     LocalAuthModule,
     ReservationModule,
+    HttpModule,
   ],
   providers: [
     {
