@@ -34,7 +34,7 @@ export class InstagramAuthenticationService {
       },
     );
 
-    console.log('res', res);
+    return res.data;
   }
 
   async getInstagramUser(accessToken: string) {}

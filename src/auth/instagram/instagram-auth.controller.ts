@@ -18,7 +18,9 @@ export class InstagramAuthenticationController {
   async handleRedirect(@Req() req: any, @Query('code') code: string) {
     console.log('insta login test', code);
 
-    this.instagramService.getInstagramUserToken(code);
+    const res = await this.instagramService.getInstagramUserToken(code);
+
+    console.log('res', res);
     // return true;
   }
 
