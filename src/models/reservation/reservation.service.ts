@@ -21,9 +21,12 @@ export class ReservationService {
     const reservation = this.reservationRepository.create({
       ...createReservationDto,
       user: { id: userId },
+      paymentStatus: true,
     });
 
     const savedReservation = await this.reservationRepository.save(reservation);
+
+    await this.sendReservationConfirmationEmail(savedReservation);
     return savedReservation;
   }
 
